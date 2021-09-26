@@ -1,10 +1,9 @@
 CFLAGS += -WCL4 -Wshadow
 
 all: debug
-	ln -fs benchmark/bench ../bench
 
-run: release
-	ln -fs $${PWD##*/}/bench ../bench
+install: release
+	ln -sf speller-benchmark/bench ../bench
 
 release: CFLAGS += -O3 -DNDEBUG
 release: bench
@@ -12,11 +11,12 @@ release: bench
 debug: CFLAGS += -g -fsanitize=undefined,thread
 debug: bench
 
-test: run
+test: install
+	cd ..
 	bench
 
 clean:
 	rm -rf bench
 	rm -rf *.dSYM
 
-.PHONY: all run release debug clean
+.PHONY: all install release debug clean

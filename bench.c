@@ -83,13 +83,13 @@ static char *cs50_speller = CS50_SPELLER;
 
 
 int main(int argc, char* argv[]) {
-    bool multithreading = false;
+    bool multithreading = true;
     char arg;
     while ((arg = getopt(argc, argv, "tms:")) != -1) {
         if (arg == 't')
             includeStaff = true;
         else if (arg == 'm')
-            multithreading = true;
+            multithreading = false;
         else if (arg == 's') {
             cs50_speller = optarg;
             includeStaff = true;
@@ -117,8 +117,7 @@ int main(int argc, char* argv[]) {
     if (!dirp)
         error_m("Could not read " CS50_TEXTS "\n", 1);
 
-    struct dirent* dir;
-    while ((dir = readdir(dirp)) != NULL)
+    for (struct dirent* dir; (dir = readdir(dirp)) != NULL;)
     {
         if (dir->d_name[0] == '.') continue;
 
