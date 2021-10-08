@@ -1,4 +1,5 @@
 CFLAGS += -WCL4 -Wshadow
+LDLIBS += -lpthread
 
 all: debug
 
