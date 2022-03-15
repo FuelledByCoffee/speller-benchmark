@@ -72,17 +72,17 @@ typedef struct
     bool  success;
 } record;
 
-static void  run_benchmark(record* mrecord);
+static void  run_benchmark(record *mrecord);
 static char *compare_format(float num1, float num2);
-static void  print_row(record* mrecord, int prec);
-static void  error_m(char* error, int errno);
+static void  print_row(record *mrecord, int prec);
+static void  error_m(char *error, int errno);
 
 
 static bool  includeStaff = false;
 static char *cs50_speller = CS50_SPELLER;
 
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
     bool multithreading = true;
     char arg;
     while ((arg = getopt(argc, argv, "tms:")) != -1) {
@@ -117,7 +117,7 @@ int main(int argc, char* argv[]) {
     if (!dirp)
         error_m("Could not read " CS50_TEXTS "\n", 1);
 
-    for (struct dirent* dir; (dir = readdir(dirp)) != NULL;)
+    for (struct dirent *dir; (dir = readdir(dirp)) != NULL;)
     {
         if (dir->d_name[0] == '.') continue;
 
@@ -226,7 +226,7 @@ int main(int argc, char* argv[]) {
 }
 
 
-static void run_benchmark(record* mrecord)
+static void run_benchmark(record *mrecord)
 {
     char user_command[250];
     char cs50_command[250];
@@ -235,7 +235,7 @@ static void run_benchmark(record* mrecord)
     sprintf(cs50_command, "%s %s", cs50_speller, mrecord->path);
 
     // execute and parse user results
-    FILE* fpipe = popen(user_command, "r");
+    FILE *fpipe = popen(user_command, "r");
     if (!fpipe)
     {
         mrecord->success = false;
@@ -313,7 +313,7 @@ static void run_benchmark(record* mrecord)
 /**
  * @brief displays the error and exists with the errno
  */
-static void error_m(char* error, int errno)
+static void error_m(char *error, int errno)
 {
     fprintf(stderr, "Error: %s", error);
     exit(errno);
@@ -321,7 +321,7 @@ static void error_m(char* error, int errno)
 
 //! @param rec record to print
 //! @param prec how many decimals to print for each value
-static void print_row(record* rec, int prec)
+static void print_row(record *rec, int prec)
 {
     printf("%s", compare_format(rec->cs50_load, rec->load));
     printf(C_CS50 "%.*f\t" C_RESET, prec, rec->cs50_load);
