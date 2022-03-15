@@ -176,7 +176,6 @@ int main(int argc, char *argv[]) {
 
         // print filename and flush buffer
         printf("%15.15s\t", records[i].filename);
-        fflush(stdout);
 
         // print status
         if (records[i].success)
@@ -363,11 +362,7 @@ static char *compare_format(float num1, float num2)
     const float epsilon = 0.0001;
 
     // no staff solution or just small diff
-    if (fmin(num1, num2) < epsilon)
-        return "";
-
-    // equal
-    else if (fabs(num1 - num2) <= epsilon)
+    if (fmin(num1, num2) < epsilon || fabs(num1 - num2) <= epsilon)
         return "";
 
     else if (num1 < num2)
