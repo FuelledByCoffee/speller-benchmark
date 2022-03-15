@@ -103,7 +103,7 @@ int main(int argc, char* argv[]) {
                 1);
 
     if (includeStaff && access(cs50_speller, X_OK) == -1)
-        error_m("Staff speller cant be opened\n", 1);
+        error_m("Staff speller cannot be opened\n", 1);
 
     // setup records to benchmark
     record records[MAX_FILES];
