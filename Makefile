@@ -13,8 +13,7 @@ debug: CFLAGS += -g -fsanitize=undefined,thread
 debug: bench
 
 test: install
-	cd ..
-	bench
+	cd ..; bench
 
 clean:
 	rm -rf bench
