@@ -113,7 +113,7 @@ int main(int argc, char* argv[]) {
 
     int num_records = 0;
 
-    DIR* dirp = opendir(CS50_TEXTS);
+    DIR *dirp = opendir(CS50_TEXTS);
     if (!dirp)
         error_m("Could not read " CS50_TEXTS "\n", 1);
 
