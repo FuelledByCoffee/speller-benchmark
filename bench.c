@@ -29,7 +29,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define CS50_SPELLER "/home/cs50/2020/fall/pset5/speller"
+#define CS50_SPELLER "./speller50"
 #define CS50_TEXTS   "texts"
 
 // max number of files that can be benchmarked
