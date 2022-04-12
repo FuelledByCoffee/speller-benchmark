@@ -326,32 +326,28 @@ static void print_row(record *rec, int prec)
     printf(C_CS50 "%.*f\t" C_RESET, prec, rec->cs50_load);
     printf("%s", compare_format(rec->load, rec->cs50_load));
     printf(C_YOURS "%.*f\t" C_RESET, prec, rec->load);
-    printf(C_RESET);
 
     printf("%s", compare_format(rec->cs50_check, rec->check));
     printf(C_CS50 "%.*f\t" C_RESET, prec, rec->cs50_check);
     printf("%s", compare_format(rec->check, rec->cs50_check));
     printf(C_YOURS "%.*f\t" C_RESET, prec, rec->check);
-    printf(C_RESET);
 
     printf("%s", compare_format(rec->cs50_size, rec->size));
     printf(C_CS50 "%.*f\t" C_RESET, prec, rec->cs50_size);
     printf("%s", compare_format(rec->size, rec->cs50_size));
     printf(C_YOURS "%.*f\t" C_RESET, prec, rec->size);
-    printf(C_RESET);
 
     printf("%s", compare_format(rec->cs50_unload, rec->unload));
     printf(C_CS50 "%.*f\t" C_RESET, prec, rec->cs50_unload);
     printf("%s", compare_format(rec->unload, rec->cs50_unload));
     printf(C_YOURS "%.*f\t" C_RESET, prec, rec->unload);
-    printf(C_RESET);
 
     printf("%s", compare_format(rec->cs50_total, rec->total));
     printf(C_CS50 "%.*f\t" C_RESET, prec, rec->cs50_total);
     printf("%s", compare_format(rec->total, rec->cs50_total));
     printf(C_YOURS "%.*f\t" C_RESET, prec, rec->total);
 
-    printf(C_RESET "\n");
+    printf("\n");
 }
 
 /**
