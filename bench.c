@@ -365,6 +365,5 @@ static char *compare_format(float num1, float num2)
         return C_BOLD;
 
     // num2 greater
-    else
-        return "";
+    return "";
 }
