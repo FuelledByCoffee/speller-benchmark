@@ -1,4 +1,4 @@
-CFLAGS += -WCL4 -Wshadow
+CFLAGS += -WCL4 -Wshadow -MJ ../$@.json
 LDLIBS += -lpthread
 
 all: debug
