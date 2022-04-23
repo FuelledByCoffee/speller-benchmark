@@ -74,7 +74,7 @@ typedef struct
 
 static void  run_benchmark(record *mrecord);
 static char *compare_format(float num1, float num2);
-static void  print_row(record *mrecord, int prec);
+static void  print_row(record *mrecord);
 static void  error_m(char *error, int errno);
 
 
@@ -185,7 +185,7 @@ int main(int argc, char *argv[]) {
         printf(C_RESET);
 
         // print data
-        print_row(&records[i], 3);
+        print_row(&records[i]);
 
         // keep track of totals
         ctload   += records[i].cs50_load;
@@ -219,7 +219,7 @@ int main(int argc, char *argv[]) {
         .cs50_unload = ctunload / num_records,
         .total       = yttotal  / num_records,
         .cs50_total  = cttotal  / num_records
-    }, 3);
+    });
 
     return 0;
 }
@@ -320,32 +320,32 @@ static void error_m(char *error, int errno)
 
 //! @param rec record to print
 //! @param prec how many decimals to print for each value
-static void print_row(record *rec, int prec)
+static void print_row(record *rec)
 {
     printf("%s", compare_format(rec->cs50_load, rec->load));
-    printf(C_CS50 "%.*f\t" C_RESET, prec, rec->cs50_load);
+    printf(C_CS50 "%.*f\t" C_RESET, 3, rec->cs50_load);
     printf("%s", compare_format(rec->load, rec->cs50_load));
-    printf(C_YOURS "%.*f\t" C_RESET, prec, rec->load);
+    printf(C_YOURS "%.*f\t" C_RESET, 3, rec->load);
 
     printf("%s", compare_format(rec->cs50_check, rec->check));
-    printf(C_CS50 "%.*f\t" C_RESET, prec, rec->cs50_check);
+    printf(C_CS50 "%.*f\t" C_RESET, 3, rec->cs50_check);
     printf("%s", compare_format(rec->check, rec->cs50_check));
-    printf(C_YOURS "%.*f\t" C_RESET, prec, rec->check);
+    printf(C_YOURS "%.*f\t" C_RESET, 3, rec->check);
 
     printf("%s", compare_format(rec->cs50_size, rec->size));
-    printf(C_CS50 "%.*f\t" C_RESET, prec, rec->cs50_size);
+    printf(C_CS50 "%.*f\t" C_RESET, 3, rec->cs50_size);
     printf("%s", compare_format(rec->size, rec->cs50_size));
-    printf(C_YOURS "%.*f\t" C_RESET, prec, rec->size);
+    printf(C_YOURS "%.*f\t" C_RESET, 3, rec->size);
 
     printf("%s", compare_format(rec->cs50_unload, rec->unload));
-    printf(C_CS50 "%.*f\t" C_RESET, prec, rec->cs50_unload);
+    printf(C_CS50 "%.*f\t" C_RESET, 3, rec->cs50_unload);
     printf("%s", compare_format(rec->unload, rec->cs50_unload));
-    printf(C_YOURS "%.*f\t" C_RESET, prec, rec->unload);
+    printf(C_YOURS "%.*f\t" C_RESET, 3, rec->unload);
 
     printf("%s", compare_format(rec->cs50_total, rec->total));
-    printf(C_CS50 "%.*f\t" C_RESET, prec, rec->cs50_total);
+    printf(C_CS50 "%.*f\t" C_RESET, 3, rec->cs50_total);
     printf("%s", compare_format(rec->total, rec->cs50_total));
-    printf(C_YOURS "%.*f\t" C_RESET, prec, rec->total);
+    printf(C_YOURS "%.*f\t" C_RESET, 3, rec->total);
 
     printf("\n");
 }
