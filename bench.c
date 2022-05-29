@@ -175,7 +175,7 @@ int main(int argc, char *argv[]) {
             run_benchmark(&records[i]);
 
         // print filename and flush buffer
-        printf("%15.15s\t", records[i].filename);
+        printf("%16.16s ", records[i].filename);
 
         // print status
         if (records[i].success)
