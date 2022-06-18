@@ -143,7 +143,7 @@ int main(int argc, char *argv[]) {
     //printf("\n\tRecord struct size: %zu\n", sizeof(record));
 
     printf("\n");
-    printf("%15.15s\t", "Filename");
+    printf("%16.16s ", "Filename");
     printf("Status\t");
     printf("Load\t\t");
     printf("Check\t\t");
