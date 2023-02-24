@@ -10,7 +10,7 @@
  *. updated 1 Apr 2020 for new directories
  *. also removed directories from the list of files
  *
- * @author FuelledByCoffee
+ * @FuelledByCoffee
  * add multithreading
  * fix uninitialized memory bug
  */
