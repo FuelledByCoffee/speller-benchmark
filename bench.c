@@ -73,7 +73,7 @@ typedef struct
 } record;
 
 static void  run_benchmark(record *mrecord);
-static char *compare_format(float num1, float num2);
+static char *compare_times(float num1, float num2);
 static void  print_row(record *rec);
 static void  error_m(char *error, int errno);
 
