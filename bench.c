@@ -59,22 +59,22 @@ typedef struct
     char *filename;
     char *path;
 
-    int misspelled, cs50_misspelled;
-    int dictionary, cs50_dictionary;
-    int text,       cs50_text;
+    struct { int yours, cs50; } misspelled;
+    struct { int yours, cs50; } dictionary;
+    struct { int yours, cs50; } text;
 
-    float load,   cs50_load;
-    float check,  cs50_check;
-    float size,   cs50_size;
-    float unload, cs50_unload;
-    float total,  cs50_total;
+    struct { float yours, cs50; } load;
+    struct { float yours, cs50; } check;
+    struct { float yours, cs50; } size;
+    struct { float yours, cs50; } unload;
+    struct { float yours, cs50; } total;
 
     bool  success;
 } record;
 
 static void  run_benchmark(record *mrecord);
 static char *compare_times(float num1, float num2);
-static void  print_row(record *rec);
+static void  print_row(record const *rec);
 static void  error_m(char *error, int errno);
 
 
@@ -84,7 +84,7 @@ static char *cs50_speller = CS50_SPELLER;
 
 int main(int argc, char *argv[]) {
     bool multithreading = true;
-    char arg;
+    int arg = 0;
     while ((arg = getopt(argc, argv, "tms:")) != -1) {
         if (arg == 't')
             includeStaff = true;
@@ -117,8 +117,7 @@ int main(int argc, char *argv[]) {
     if (!dirp)
         error_m("Could not read " CS50_TEXTS "\n", 1);
 
-    for (struct dirent *dir; (dir = readdir(dirp)) != NULL;)
-    {
+    for (struct dirent *dir = NULL; (dir = readdir(dirp)) != NULL;) {
         if (dir->d_name[0] == '.') continue;
 
         records[num_records].filename = strdupa(dir->d_name);
@@ -188,20 +187,20 @@ int main(int argc, char *argv[]) {
         print_row(&records[i]);
 
         // keep track of totals
-        ctload   += records[i].cs50_load;
-        ytload   += records[i].load;
+        ctload   += records[i].load.cs50;
+        ytload   += records[i].load.yours;
 
-        ctcheck  += records[i].cs50_check;
-        ytcheck  += records[i].check;
+        ctcheck  += records[i].check.cs50;
+        ytcheck  += records[i].check.yours;
 
-        ctsize   += records[i].cs50_size;
-        ytsize   += records[i].size;
+        ctsize   += records[i].size.cs50;
+        ytsize   += records[i].size.yours;
 
-        ctunload += records[i].cs50_unload;
-        ytunload += records[i].unload;
+        ctunload += records[i].unload.cs50;
+        ytunload += records[i].unload.yours;
 
-        cttotal  += records[i].cs50_total;
-        yttotal  += records[i].total;
+        cttotal  += records[i].total.cs50;
+        yttotal  += records[i].total.yours;
     }
 
     // display averages
@@ -209,20 +208,18 @@ int main(int argc, char *argv[]) {
     printf("%15.15s \t", "Average:");
 
     print_row(&(record){
-        .load        = ytload   / num_records,
-        .cs50_load   = ctload   / num_records,
-        .check       = ytcheck  / num_records,
-        .cs50_check  = ctcheck  / num_records,
-        .size        = ytsize   / num_records,
-        .cs50_size   = ctsize   / num_records,
-        .unload      = ytunload / num_records,
-        .cs50_unload = ctunload / num_records,
-        .total       = yttotal  / num_records,
-        .cs50_total  = cttotal  / num_records
+        .load.yours   = ytload   / num_records,
+        .load.cs50    = ctload   / num_records,
+        .check.yours  = ytcheck  / num_records,
+        .check.cs50   = ctcheck  / num_records,
+        .size.yours   = ytsize   / num_records,
+        .size.cs50    = ctsize   / num_records,
+        .unload.yours = ytunload / num_records,
+        .unload.cs50  = ctunload / num_records,
+        .total.yours  = yttotal  / num_records,
+        .total.cs50   = cttotal  / num_records
     });
-
-    return 0;
-}
+} // main
 
 
 static void run_benchmark(record *mrecord)
@@ -249,7 +246,7 @@ static void run_benchmark(record *mrecord)
         if (strstr(buffer, "WORDS MISSPELLED") != NULL)
             break;
 
-    sscanf(buffer, "WORDS MISSPELLED: %d\n", &mrecord->misspelled);
+    sscanf(buffer, "WORDS MISSPELLED: %d\n", &mrecord->misspelled.yours);
 
     // parse output
     fscanf(fpipe,   "WORDS IN DICTIONARY:  %d\n"
@@ -259,13 +256,13 @@ static void run_benchmark(record *mrecord)
                     "TIME IN size:         %f\n"
                     "TIME IN unload:       %f\n"
                     "TIME IN TOTAL:        %f\n"
-            , &mrecord->dictionary
-            , &mrecord->text
-            , &mrecord->load
-            , &mrecord->check
-            , &mrecord->size
-            , &mrecord->unload
-            , &mrecord->total
+            , &mrecord->dictionary.yours
+            , &mrecord->text.yours
+            , &mrecord->load.yours
+            , &mrecord->check.yours
+            , &mrecord->size.yours
+            , &mrecord->unload.yours
+            , &mrecord->total.yours
     );
 
     pclose(fpipe);
@@ -286,7 +283,7 @@ static void run_benchmark(record *mrecord)
         if (strstr(buffer, "WORDS MISSPELLED") != NULL)
             break;
 
-    sscanf(buffer, "WORDS MISSPELLED: %d\n", &mrecord->cs50_misspelled);
+    sscanf(buffer, "WORDS MISSPELLED: %d\n", &mrecord->misspelled.cs50);
 
     // parse output
     fscanf(fpipe,   "WORDS IN DICTIONARY:  %d\n"
@@ -297,13 +294,13 @@ static void run_benchmark(record *mrecord)
                     "TIME IN unload:       %f\n"
                     "TIME IN TOTAL:        %f\n"
 
-            , &mrecord->cs50_dictionary
-            , &mrecord->cs50_text
-            , &mrecord->cs50_load
-            , &mrecord->cs50_check
-            , &mrecord->cs50_size
-            , &mrecord->cs50_unload
-            , &mrecord->cs50_total);
+            , &mrecord->dictionary.cs50
+            , &mrecord->text.cs50
+            , &mrecord->load.cs50
+            , &mrecord->check.cs50
+            , &mrecord->size.cs50
+            , &mrecord->unload.cs50
+            , &mrecord->total.cs50);
 
     pclose(fpipe);
 }
@@ -320,32 +317,32 @@ static void error_m(char *error, int errno)
 
 //! @param rec record to print
 //! @param prec how many decimals to print for each value
-static void print_row(record *rec)
+static void print_row(record const *rec)
 {
-    printf("%s", compare_format(rec->cs50_load, rec->load));
-    printf(C_CS50 "%.*f\t" C_RESET, 3, rec->cs50_load);
-    printf("%s", compare_format(rec->load, rec->cs50_load));
-    printf(C_YOURS "%.*f\t" C_RESET, 3, rec->load);
+    printf("%s", compare_times(rec->load.cs50, rec->load.yours));
+    printf(C_CS50 "%.*f\t" C_RESET, 3, rec->load.cs50);
+    printf("%s", compare_times(rec->load.yours, rec->load.cs50));
+    printf(C_YOURS "%.*f\t" C_RESET, 3, rec->load.yours);
 
-    printf("%s", compare_format(rec->cs50_check, rec->check));
-    printf(C_CS50 "%.*f\t" C_RESET, 3, rec->cs50_check);
-    printf("%s", compare_format(rec->check, rec->cs50_check));
-    printf(C_YOURS "%.*f\t" C_RESET, 3, rec->check);
+    printf("%s", compare_times(rec->check.cs50, rec->check.yours));
+    printf(C_CS50 "%.*f\t" C_RESET, 3, rec->check.cs50);
+    printf("%s", compare_times(rec->check.yours, rec->check.cs50));
+    printf(C_YOURS "%.*f\t" C_RESET, 3, rec->check.yours);
 
-    printf("%s", compare_format(rec->cs50_size, rec->size));
-    printf(C_CS50 "%.*f\t" C_RESET, 3, rec->cs50_size);
-    printf("%s", compare_format(rec->size, rec->cs50_size));
-    printf(C_YOURS "%.*f\t" C_RESET, 3, rec->size);
+    printf("%s", compare_times(rec->size.cs50, rec->size.yours));
+    printf(C_CS50 "%.*f\t" C_RESET, 3, rec->size.cs50);
+    printf("%s", compare_times(rec->size.yours, rec->size.cs50));
+    printf(C_YOURS "%.*f\t" C_RESET, 3, rec->size.yours);
 
-    printf("%s", compare_format(rec->cs50_unload, rec->unload));
-    printf(C_CS50 "%.*f\t" C_RESET, 3, rec->cs50_unload);
-    printf("%s", compare_format(rec->unload, rec->cs50_unload));
-    printf(C_YOURS "%.*f\t" C_RESET, 3, rec->unload);
+    printf("%s", compare_times(rec->unload.cs50, rec->unload.yours));
+    printf(C_CS50 "%.*f\t" C_RESET, 3, rec->unload.cs50);
+    printf("%s", compare_times(rec->unload.yours, rec->unload.cs50));
+    printf(C_YOURS "%.*f\t" C_RESET, 3, rec->unload.yours);
 
-    printf("%s", compare_format(rec->cs50_total, rec->total));
-    printf(C_CS50 "%.*f\t" C_RESET, 3, rec->cs50_total);
-    printf("%s", compare_format(rec->total, rec->cs50_total));
-    printf(C_YOURS "%.*f\t" C_RESET, 3, rec->total);
+    printf("%s", compare_times(rec->total.cs50, rec->total.yours));
+    printf(C_CS50 "%.*f\t" C_RESET, 3, rec->total.cs50);
+    printf("%s", compare_times(rec->total.yours, rec->total.cs50));
+    printf(C_YOURS "%.*f\t" C_RESET, 3, rec->total.yours);
 
     printf("\n");
 }
@@ -353,15 +350,15 @@ static void print_row(record *rec)
 /**
  * @returns string constant bold if num1 is less
  */
-static char *compare_format(float num1, float num2)
+static char *compare_times(float num1, float num2)
 {
-    const float epsilon = 0.0001;
+    float const epsilon = 0.0001F;
 
     // no staff solution or just small diff
-    if (fmin(num1, num2) < epsilon || fabs(num1 - num2) <= epsilon)
+    if (fminf(num1, num2) < epsilon || fabsf(num1 - num2) <= epsilon)
         return "";
 
-    else if (num1 < num2)
+    if (num1 < num2)
         return C_BOLD;
 
     // num2 greater
