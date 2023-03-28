@@ -1,5 +1,6 @@
-CFLAGS += -WCL4 -Wshadow -MJ ../$@.json
-LDLIBS += -lpthread
+CPPFLAGS += -MJ ../$@.json
+CFLAGS   += -WCL4 -Wshadow
+LDLIBS   += -lpthread
 
 all: debug
 
@@ -18,5 +19,6 @@ test: install
 clean:
 	rm -rf bench
 	rm -rf *.dSYM
+	rm -rf ../bench.json
 
 .PHONY: all install release debug clean
