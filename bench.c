@@ -84,11 +84,11 @@ static char *cs50_speller = CS50_SPELLER;
 int main(int argc, char *argv[]) {
 	bool multithreading = true;
 	int  arg            = 0;
-	while ((arg = getopt(argc, argv, "tms:")) != -1) {
-		if (arg == 't')
-			includeStaff = true;
-		else if (arg == 'm')
+	while ((arg = getopt(argc, argv, "1ts:")) != -1) {
+		if (arg == '1')
 			multithreading = false;
+		else if (arg == 't')
+			includeStaff = true;
 		else if (arg == 's') {
 			cs50_speller = optarg;
 			includeStaff = true;
