@@ -18,5 +18,6 @@ enable_sanitizers()
 configure_file(version.h.in version.h)
 
 add_executable(bench bench.c)
+target_include_directories(bench PRIVATE ${PROJECT_BINARY_DIR})
 
 install(TARGETS bench DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/..)

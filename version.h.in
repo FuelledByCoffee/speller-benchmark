@@ -1,0 +1,4 @@
+#pragma once
+
+#define benchmark_VERSION_MAJOR @speller-benchmark_VERSION_MAJOR@
+#define benchmark_VERSION_MINOR @speller-benchmark_VERSION_MINOR@
