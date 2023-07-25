@@ -5,8 +5,6 @@ project(speller-benchmark VERSION 2.0 LANGUAGES C)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-include(CTest)
-
 # set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 # set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 # include(CPack)
@@ -21,3 +19,8 @@ add_executable(bench bench.c)
 target_include_directories(bench PRIVATE ${PROJECT_BINARY_DIR})
 
 install(TARGETS bench DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/..)
+
+include(CTest)
+add_test(NAME run-benchmark
+	COMMAND bench
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/..)
