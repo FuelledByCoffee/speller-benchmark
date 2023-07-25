@@ -18,7 +18,7 @@
 #define _XOPEN_SOURCE
 #define _XOPEN_SOURCE_EXTENDED
 
-#include <version.h>
+#include <version.hpp>
 
 #include <alloca.h>
 #include <dirent.h>
@@ -156,7 +156,7 @@ int main(int argc, char *argv[]) {
 
 
 	// benchmark the files and output records
-	pthread_t threads[num_records]; // one thread per benchmark
+	pthread_t threads[MAX_FILES]; // one thread per benchmark
 	if (multithreading) {
 		for (int i = 0; i < num_records; i++) {
 			pthread_create(&threads[i], NULL, PCAST run_benchmark, &records[i]);
