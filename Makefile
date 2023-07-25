@@ -1,5 +1,5 @@
 CPPFLAGS += -MJ ../$@.json
-CFLAGS   += -WCL4 -Wshadow
+CFLAGS   += -Wall -Wextra -Wshadow
 LDLIBS   += -lpthread
 
 all: debug
