@@ -18,6 +18,8 @@
 #define _XOPEN_SOURCE
 #define _XOPEN_SOURCE_EXTENDED
 
+#include <version.h>
+
 #include <alloca.h>
 #include <dirent.h>
 #include <getopt.h>
