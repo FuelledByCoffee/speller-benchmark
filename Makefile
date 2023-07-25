@@ -1,6 +1,8 @@
-CPPFLAGS += -MJ ../$@.json
-CFLAGS   += -Wall -Wextra -Wshadow
-LDLIBS   += -lpthread
+ifeq ($(CC),clang)
+	CPPFLAGS += -MJ ../$@.json
+endif
+CFLAGS += -Wall -Wextra -Wshadow
+LDLIBS += -lpthread -lm
 
 all: debug
 
