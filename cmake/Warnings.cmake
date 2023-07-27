@@ -3,7 +3,7 @@
 # https://github.com/lefticus/cppbestpractices/blob/master/02-Use_the_Tools_Available.md
 
 function(enable_warnings)
-	option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" FALSE)
+	option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
 
 	set(CLANG_WARNINGS
 		-Wall
