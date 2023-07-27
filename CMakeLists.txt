@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.21.0)
 
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+
 project(speller-benchmark VERSION 2.0 LANGUAGES C)
 
 set(CMAKE_C_STANDARD 17)
@@ -8,11 +10,13 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 # set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 # set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 # include(CPack)
-
-include(cmake/Warnings.cmake)
+include(BuildType)
+include(Warnings)
+include(Sanitizers)
+set_default_buildtype()
 enable_warnings()
-include(cmake/Sanitizers.cmake)
 enable_sanitizers()
+
 configure_file(version.h.in version.h)
 
 add_executable(bench bench.c)
