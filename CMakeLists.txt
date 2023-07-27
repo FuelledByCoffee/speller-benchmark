@@ -23,10 +23,10 @@ get_filename_component(PARENT_DIR ../ ABSOLUTE)
 set(SPELLER_LOCATION "${PARENT_DIR}" CACHE STRING "The location of your cs50 project directory")
 set(SPELLER50_LOCATION "${SPELLER_LOCATION}/speller50" CACHE STRING "The location of the staff implementation of speller")
 
-option(COMPARE_SPELLER50 "Compare your results against speller50" ON)
-
 add_executable(bench bench.c)
 target_include_directories(bench PRIVATE ${PROJECT_BINARY_DIR})
+
+option(COMPARE_SPELLER50 "Compare your results against speller50" ON)
 
 if(COMPARE_SPELLER50)
 	execute_process(COMMAND ${SPELLER50_LOCATION} "texts/cat.txt"
