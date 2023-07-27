@@ -53,7 +53,7 @@
 #define PCAST    (void *(*)(void *))
 
 #ifndef _GNU_SOURCE
-#define strdupa(a) strcpy((char *)alloca(strlen(a) + 1), a)
+	#define strdupa(a) strcpy((char *)alloca(strlen(a) + 1), a)
 #endif
 
 typedef struct {
@@ -78,8 +78,12 @@ static char *compare_times(float num1, float num2);
 static void  print_row(record const *rec);
 static void  error_m(char *error, int errno);
 
+#ifdef COMPARE_STAFF
+static bool includeStaff = true;
+#else
+static bool includeStaff = false;
+#endif
 
-static bool  includeStaff = false;
 static char *cs50_speller = CS50_SPELLER;
 
 
@@ -336,8 +340,7 @@ static char *compare_times(float num1, float num2) {
 	const float epsilon = 0.0001F;
 
 	// no staff solution or just small diff
-	if (fminf(num1, num2) < epsilon || fabsf(num1 - num2) <= epsilon)
-		return "";
+	if (fminf(num1, num2) < epsilon || fabsf(num1 - num2) <= epsilon) return "";
 
 	if (num1 < num2) return C_BOLD;
 
