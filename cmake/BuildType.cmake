@@ -1,4 +1,4 @@
-# Sourced from neovim project
+# Source https://github.com/neovim/neovim/blob/74bd4aba57d2f1b224abe46a6de82911d14ef6c1/cmake/Util.cmake#L150
 
 # Set default build type to Debug. Also limit the list of allowable build types
 # to the ones defined in variable allowableBuildTypes.
@@ -31,7 +31,7 @@ function(set_default_buildtype)
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "${allowableBuildTypes}")
     if(NOT CMAKE_BUILD_TYPE)
       message(STATUS "CMAKE_BUILD_TYPE not specified, default is 'Debug'")
-      set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build" FORCE)
+			set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build" FORCE)
     elseif(NOT CMAKE_BUILD_TYPE IN_LIST allowableBuildTypes)
       message(FATAL_ERROR "Invalid build type: ${CMAKE_BUILD_TYPE}")
     else()
