@@ -10,9 +10,11 @@
  *. updated 1 Apr 2020 for new directories
  *. also removed directories from the list of files
  *
- * @FuelledByCoffee
+ * @Fuelled_By_Coffee
  * add multithreading
  * fix uninitialized memory bug
+ *
+ * - Johannes "Fuelled_By_Coffee" Eckhoff j.eckhoff@gmail.com 
  */
 
 #define _XOPEN_SOURCE
