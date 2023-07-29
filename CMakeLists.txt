@@ -19,16 +19,8 @@ set_default_buildtype()
 enable_warnings()
 enable_sanitizers()
 
-configure_file(version.hpp.in version.hpp)
-
-add_executable(bench bench.cpp)
-target_include_directories(bench PRIVATE ${PROJECT_BINARY_DIR})
-
-find_package(fmt CONFIG REQUIRED)
-target_link_libraries(bench PRIVATE fmt::fmt)
-
-find_package(range-v3 CONFIG REQUIRED)
-target_link_libraries(bench PRIVATE range-v3::meta range-v3::concepts range-v3::range-v3)
+add_subdirectory(src)
+add_subdirectory(tests)
 
 get_filename_component(PARENT_DIR ../ ABSOLUTE)
 set(SPELLER_LOCATION "${PARENT_DIR}" CACHE STRING "The location of your cs50 project directory")
@@ -53,18 +45,3 @@ if(COMPARE_SPELLER50)
 endif()
 
 install(TARGETS bench DESTINATION ${SPELLER_LOCATION})
-
-enable_testing()
-
-add_test(NAME run_benchmark
-	COMMAND bench
-	WORKING_DIRECTORY ${SPELLER_LOCATION})
-set_tests_properties(run_benchmark
-	PROPERTIES
-	REQUIRED_FILES ${SPELLER_LOCATION}/speller)
-
-add_test(NAME wrong_directory
-	COMMAND bench)
-set_tests_properties(wrong_directory
-	PROPERTIES
-	WILL_FAIL TRUE)
