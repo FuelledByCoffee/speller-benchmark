@@ -186,9 +186,9 @@ int main(int argc, char *argv[]) {
 } // main
 
 static void run_benchmark(record &mrecord) {
-    std::string user_command = fmt::sprintf("./speller {}", mrecord.path.generic_string());
+    std::string user_command = fmt::format("./speller {}", mrecord.path.generic_string());
     std::string cs50_command =
-        fmt::sprintf("{} {}", cs50_speller, mrecord.path.generic_string());
+        fmt::format("{} {}", cs50_speller, mrecord.path.generic_string());
 
     // execute and parse user results
     FILE *fpipe = popen(user_command.c_str(), "r");
