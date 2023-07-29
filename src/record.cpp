@@ -79,11 +79,11 @@ auto operator<<(std::ostream &os, record const &rec) -> std::ostream & {
 
     // total
     os << compare_times(rec.total.first, rec.total.second); // bold?
-    os << C_CS50 << std::fixed << std::setprecision(3) << rec.total.second
+    os << C_CS50 << std::fixed << std::setprecision(3) << rec.total.first
        << C_RESET << '\t';
 
     os << compare_times(rec.total.second, rec.total.first); // bold?
-    os << C_YOURS << std::fixed << std::setprecision(3) << rec.total.first
+    os << C_YOURS << std::fixed << std::setprecision(3) << rec.total.second
        << C_RESET << '\t';
 
     return os;
