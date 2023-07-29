@@ -38,7 +38,7 @@ auto operator<<(std::ostream &os, record const &rec) -> std::ostream & {
 
     // print status
     if (rec.success)
-        os << fmt::format(fmt::emphasis::bold | fg(fmt::color::green), "OK\t");
+        os << fmt::format(fmt::emphasis::bold | fg(fmt::color::lawn_green), "OK\t");
     else
         os << fmt::format(fmt::emphasis::bold | fg(fmt::color::red), "ERROR\t");
     os << fmt::format(C_RESET);
