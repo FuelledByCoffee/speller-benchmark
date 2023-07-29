@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.21.0)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
+include(cmake/vcpkg.cmake) # Must set toolchain file before calling project()
+
 project(speller-benchmark VERSION 2.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -21,6 +23,12 @@ configure_file(version.hpp.in version.hpp)
 
 add_executable(bench bench.cpp)
 target_include_directories(bench PRIVATE ${PROJECT_BINARY_DIR})
+
+find_package(fmt CONFIG REQUIRED)
+target_link_libraries(bench PRIVATE fmt::fmt)
+
+find_package(range-v3 CONFIG REQUIRED)
+target_link_libraries(bench PRIVATE range-v3::meta range-v3::concepts range-v3::range-v3)
 
 get_filename_component(PARENT_DIR ../ ABSOLUTE)
 set(SPELLER_LOCATION "${PARENT_DIR}" CACHE STRING "The location of your cs50 project directory")
