@@ -8,6 +8,8 @@
 #include <colors.hpp>
 #include <record.hpp>
 
+#include <iterator>
+#include <iostream>
 #include <string_view>
 
 auto operator<<(std::ostream &os, record const &rec) -> std::ostream & {
@@ -31,7 +33,7 @@ auto operator<<(std::ostream &os, record const &rec) -> std::ostream & {
 
     using namespace fmt::literals;
 
-    os << fmt::format("{: >16} ", rec.filename);
+    fmt::format_to_n(std::ostream_iterator<char>(os), 16, "{: >16} ", rec.filename);
     std::fflush(stdout);
 
     // print status
