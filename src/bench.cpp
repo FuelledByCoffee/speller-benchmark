@@ -22,6 +22,7 @@
 #include <colors.hpp>
 
 #include <array>
+#include <cmath>
 #include <filesystem>
 #include <string>
 #include <string_view>
@@ -35,12 +36,8 @@
 #include <fmt/printf.h>
 #include <fmt/std.h>
 
-#include <range/v3/core.hpp>
-
-#include <alloca.h>
 #include <dirent.h>
 #include <getopt.h>
-#include <math.h>
 #include <pthread.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -148,18 +145,8 @@ int main(int argc, char *argv[]) {
         else
             run_benchmark(records[i]);
 
-        // print filename and flush buffer
-        fmt::print("{: >16} ", records[i].filename);
-
-        // print status
-        if (records[i].success)
-            fmt::print(C_BOLD C_GREEN "OK\t");
-        else
-            fmt::print(C_BOLD C_RED "ERROR\t");
-        fmt::print(C_RESET);
-
         // print data
-        std::cout << records[i] << '\n';
+        fmt::print("{}\n", records[i]);
 
         // keep track of totals
         ctload += records[i].load.second;
