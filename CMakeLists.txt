@@ -1,11 +1,14 @@
 cmake_minimum_required(VERSION 3.21.0)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-project(speller-benchmark VERSION 2.0 LANGUAGES C)
+include(vcpkg) # Must set toolchain file before calling project()
 
-set(CMAKE_C_STANDARD 17)
-set(CMAKE_C_STANDARD_REQUIRED ON)
+project(speller-benchmark VERSION 2.0 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 # set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 # set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
@@ -17,14 +20,11 @@ set_default_buildtype()
 enable_warnings()
 enable_sanitizers()
 
-configure_file(version.h.in version.h)
+add_subdirectory(src)
 
 get_filename_component(PARENT_DIR ../ ABSOLUTE)
 set(SPELLER_LOCATION "${PARENT_DIR}" CACHE STRING "The location of your cs50 project directory")
 set(SPELLER50_LOCATION "${SPELLER_LOCATION}/speller50" CACHE STRING "The location of the staff implementation of speller")
-
-add_executable(bench bench.c)
-target_include_directories(bench PRIVATE ${PROJECT_BINARY_DIR})
 
 option(COMPARE_SPELLER50 "Compare your results against speller50" ON)
 
@@ -46,17 +46,16 @@ endif()
 
 install(TARGETS bench DESTINATION ${SPELLER_LOCATION})
 
-enable_testing()
-
-add_test(NAME run_benchmark
+include(CTest)
+add_test(NAME single_thread
+	COMMAND bench -1
+	WORKING_DIRECTORY ${SPELLER_LOCATION})
+add_test(NAME multi_thread
 	COMMAND bench
 	WORKING_DIRECTORY ${SPELLER_LOCATION})
-set_tests_properties(run_benchmark
-	PROPERTIES
-	REQUIRED_FILES ${SPELLER_LOCATION}/speller)
-
-add_test(NAME wrong_directory
-	COMMAND bench)
-set_tests_properties(wrong_directory
-	PROPERTIES
-	WILL_FAIL TRUE)
+add_test(NAME single_thread_with_staff
+	COMMAND bench -1t
+	WORKING_DIRECTORY ${SPELLER_LOCATION})
+add_test(NAME multi_thread_with_staff
+	COMMAND bench -t
+	WORKING_DIRECTORY ${SPELLER_LOCATION})

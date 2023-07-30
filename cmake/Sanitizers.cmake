@@ -47,7 +47,7 @@ function(enable_sanitizers)
 		if(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 			option(ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
 
-			if(ENABLE_SANITIZER_MEMORY AND CMAKE_C_COMPILER_ID MATCHES ".*Clang")
+			if(ENABLE_SANITIZER_MEMORY AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
 				if("address" IN_LIST SANITIZERS
 					OR "thread" IN_LIST SANITIZERS
 					OR "leak" IN_LIST SANITIZERS)
