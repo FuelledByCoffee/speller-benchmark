@@ -12,9 +12,9 @@ inline void print_results_header() {
 
 	// clang-format off
 	// print header
-	fmt::print("\t" C_CS50  "Cyan   " C_RESET "- CS50's implementation\n");
-	fmt::print("\t" C_YOURS "Yellow " C_RESET "- your implementation\n");
-	fmt::print("\t" C_BOLD  "Bold   " C_RESET "- lesser time\n");
+	fmt::print("\t" C_CS50  "Cyan  " C_RESET "- CS50's implementation\n");
+	fmt::print("\t" C_YOURS "White " C_RESET "- your implementation\n");
+	fmt::print("\t" C_BOLD  "Bold  " C_RESET "- lesser time\n");
 	// clang-format on
 
 	fmt::print("\n");

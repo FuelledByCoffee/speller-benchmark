@@ -24,10 +24,6 @@ struct record {
 	bool success = true;
 
 	auto operator+=(record const &other) -> record & {
-		misspelled += other.misspelled;
-		dictionary += other.dictionary;
-		text       += other.text;
-
 		load   += other.load;
 		check  += other.check;
 		size   += other.size;
@@ -39,10 +35,6 @@ struct record {
 
 	template <typename Int = int>
 	auto operator/=(Int divisor) -> record & {
-		misspelled /= divisor;
-		dictionary /= divisor;
-		text       /= divisor;
-
 		load   /= divisor;
 		check  /= divisor;
 		size   /= divisor;
@@ -55,7 +47,8 @@ struct record {
 
 class benchmark {
  public:
-	benchmark() = default;
+	benchmark()                       = default;
+	benchmark(benchmark const &other) = default;
 
 	benchmark(std::filesystem::path const &txtfile, bool bench_staff) //
 		: txt(txtfile), m_staff(bench_staff) {
@@ -86,6 +79,8 @@ class benchmark {
 	friend auto operator<<(std::ostream &os, benchmark const &results)
 			-> std::ostream &;
 
+
+ public:
 	std::filesystem::path txt;
 
 	record yours{};

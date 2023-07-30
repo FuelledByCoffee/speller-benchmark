@@ -12,4 +12,4 @@
 #define C_BOLD   "\e[1m"
 #define C_BWHITE "\e[47m"
 #define C_CS50   C_CYAN
-#define C_YOURS  C_YELLOW
+#define C_YOURS  C_WHITE
