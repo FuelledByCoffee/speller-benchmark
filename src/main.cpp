@@ -25,6 +25,8 @@
 
 #include <assert.h>
 #include <filesystem>
+#include <iterator>
+#include <numeric>
 #include <string_view>
 #include <vector>
 
@@ -37,6 +39,12 @@
 
 #define CS50_TEXTS "texts"
 
+namespace fs = std::filesystem;
+
+static auto file_count(fs::path dir) noexcept ->
+		typename std::iterator_traits<fs::directory_iterator>::difference_type;
+
+
 static auto error_m(std::string_view message, int code) -> void;
 
 #ifdef COMPARE_STAFF
@@ -45,7 +53,7 @@ static bool includeStaff = true;
 static bool includeStaff = false;
 #endif
 
-int main(int argc, char *argv[]) {
+auto main(int argc, char *argv[]) -> int {
 	std::string_view cs50_speller   = "./speller50";
 	bool             multithreading = true;
 	int              arg            = 0;
@@ -67,40 +75,47 @@ int main(int argc, char *argv[]) {
 
 	print_results_header();
 
-	namespace fs = std::filesystem;
-
 	fs::path   text_files(CS50_TEXTS);
-	auto const count = std::distance(fs::directory_iterator{text_files},
-	                                 fs::directory_iterator{});
+	auto const count = file_count(text_files);
+	if (count == 0) exit(2);
 
-	std::vector<benchmark> records{};
+	std::vector<benchmark>   records{};
+	std::vector<std::thread> threads;
 	records.reserve(count);
-	benchmark total{"Total", false};
+	threads.reserve(count);
 
 	for (auto const &txt : std::filesystem::directory_iterator{text_files}) {
-		if (multithreading) {
-			records.emplace_back(txt.path(), includeStaff);
+		assert(txt.is_regular_file() && "Non text file found in texts dir");
+		records.emplace_back(txt.path(), includeStaff);
+	}
+
+	for (auto &b : records) {
+		if (!multithreading) {
+			b.run();
+			fmt::print("{}\n", b);
+		} else {
+			threads.emplace_back(&benchmark::run, &b);
 		}
 	}
 
-	for (auto const &txt : fs::directory_iterator{text_files}) {
-		assert(txt.is_regular_file() && "Non text file found in texts dir");
-		records.emplace_back(txt.path(), includeStaff);
+	if (multithreading) {
+		for (auto &t : threads) {
+			t.join();
+		}
 
-		auto &b = records.back();
-
-		b.run();
-		total += b;
+		std::ranges::sort(records, [](benchmark const &b1, benchmark const &b2) {
+			return b1.yours.total < b2.yours.total;
+		});
+		fmt::print("{}\n", fmt::join(records, "\n"));
 	}
 
-	std::ranges::sort(records, [](benchmark const &b1, benchmark const &b2) {
-		return b1.yours.total < b2.yours.total;
-	});
 
+	benchmark total = std::reduce(std::cbegin(records), std::cend(records));
+
+	total.txt         = fs::path{"Total"};
 	benchmark average = total / count;
 	average.txt       = fs::path{"Average"};
 
-	fmt::print("{}\n", fmt::join(records, "\n"));
 	fmt::print("\n{}\n", total);
 	fmt::print("{}\n", average);
 } // main
@@ -109,4 +124,16 @@ int main(int argc, char *argv[]) {
 static void error_m(std::string_view message, int code) {
 	fmt::print(stderr, "Error: {}", message);
 	exit(code);
+}
+
+static auto file_count(fs::path dir) noexcept ->
+		typename std::iterator_traits<fs::directory_iterator>::difference_type {
+	fs::directory_iterator i;
+	try {
+		i = fs::directory_iterator{dir};
+	} catch (const std::exception &e) {
+		fmt::print(stderr, "{}\n", e.what());
+		return 0;
+	}
+	return std::distance(i, fs::directory_iterator{});
 }

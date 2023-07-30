@@ -33,7 +33,12 @@ struct record {
 		return *this;
 	}
 
-	template <typename Int = int>
+	friend auto operator+(record lhs, record rhs) -> record {
+		lhs += rhs;
+		return lhs;
+	}
+
+	template <typename Int>
 	auto operator/=(Int divisor) -> record & {
 		load   /= divisor;
 		check  /= divisor;
@@ -50,11 +55,7 @@ class benchmark {
 	benchmark() = default;
 
 	benchmark(std::filesystem::path const &txtfile, bool bench_staff) //
-		: txt(txtfile), m_staff(bench_staff) {
-		// if (multithread) {
-		//     t1 = std::thread(&benchmark::run, this);
-		// }
-	}
+		: txt(txtfile), m_staff(bench_staff) {}
 
 	void run() {
 		if (m_staff) cs50.run("speller50", txt);
@@ -65,6 +66,11 @@ class benchmark {
 		yours += other.yours;
 		cs50  += other.cs50;
 		return *this;
+	}
+
+	friend auto operator+(benchmark lhs, benchmark rhs) -> benchmark {
+		lhs += rhs;
+		return lhs;
 	}
 
 	template <typename Int = int>
