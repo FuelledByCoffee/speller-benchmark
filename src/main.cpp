@@ -20,12 +20,16 @@
 
 #include <benchmark.hpp>
 #include <colors.hpp>
+#include <results.hpp>
 #include <version.hpp>
 
+#include <assert.h>
+#include <filesystem>
 #include <string_view>
 #include <vector>
 
 #include <fmt/color.h>
+#include <fmt/std.h>
 
 #include <dirent.h>
 #include <getopt.h>
@@ -41,94 +45,72 @@ static bool includeStaff = false;
 #endif
 
 int main(int argc, char *argv[]) {
-    const char *cs50_speller = "./speller50";
-    bool multithreading = true;
-    int arg = 0;
-    while ((arg = getopt(argc, argv, "1t:")) != -1) {
-        if (arg == '1')
-            multithreading = false;
-        else if (arg == 't')
-            includeStaff = true;
-    }
+	const char *cs50_speller = "./speller50";
+	bool multithreading = true;
+	int arg = 0;
+	while ((arg = getopt(argc, argv, "1t:")) != -1) {
+		if (arg == '1')
+			multithreading = false;
+		else if (arg == 't')
+			includeStaff = true;
+	}
 
-    // make sure speller program exists
-    if (access("speller", X_OK) == -1)
-        error_m("speller binary does not exist, please compile it and place it "
-                "in the current directory\n",
-                1);
+	// make sure speller program exists
+	if (access("speller", X_OK) == -1)
+		error_m("speller binary does not exist, please compile it and place it "
+				"in the current directory\n",
+				1);
 
-    if (includeStaff && access(cs50_speller, X_OK) == -1)
-        error_m("Staff speller cannot be opened\n", 1);
+	if (includeStaff && access(cs50_speller, X_OK) == -1)
+		error_m("Staff speller cannot be opened\n", 1);
 
-    // setup benchmarks to benchmark
-    std::vector<benchmark> benchmarks{};
+	print_results_header();
 
-    DIR *dirp = opendir(CS50_TEXTS);
-    if (!dirp)
-        error_m("Could not read " CS50_TEXTS "\n", 1);
+	namespace fs = std::filesystem;
 
-    for (dirent *dir = NULL; (dir = readdir(dirp)) != NULL;) {
-        if (dir->d_name[0] == '.')
-            continue;
+	fs::path text_files(CS50_TEXTS);
+	auto count = std::distance(fs::directory_iterator{text_files}, fs::directory_iterator{});
 
-        benchmarks.emplace_back(dir->d_name, includeStaff, multithreading);
-    }
+	std::vector<benchmark> records{};
+	records.reserve(count + 1);
+	benchmark Total{"Total", false};
 
-    closedir(dirp);
+	for (auto const &txt : std::filesystem::directory_iterator{text_files}) {
+		if (multithreading) {
+			records.emplace_back(txt.path(), includeStaff);
+		}
+	}
 
-    // clear screen
-    fmt::print(C_CLEAR);
+	for (auto const &txt : fs::directory_iterator{text_files}) {
+		assert(txt.is_regular_file() && "Non text file found in texts dir");
+		benchmark b{txt.path(), includeStaff};
 
-    // clang-format off
-    // print header
-    fmt::print("\t" C_CS50  "Cyan   " C_RESET "- CS50's implementation\n");
-    fmt::print("\t" C_YOURS "Yellow " C_RESET "- your implementation\n");
-    fmt::print("\t" C_BOLD  "Bold   " C_RESET "- lesser time\n");
-    // clang-format on
+		b.run();
 
-    fmt::print("\n");
-    fmt::print("{: >16} ", "Filename");
-    fmt::print("Status\t");
-    fmt::print("Load\t\t");
-    fmt::print("Check\t\t");
-    fmt::print("Size\t\t");
-    fmt::print("Unload\t\t");
-    fmt::print("Total\t\t");
-    fmt::print("\n");
+		fmt::print("{}\n", b);
 
-    benchmark average{};
-    average.filename = "Average";
+		// keep track of totals
+		Total.cs50.load += b.cs50.load;
+		Total.yours.load += b.yours.load;
 
-    for (auto &benchmark : benchmarks) {
+		Total.cs50.check += b.cs50.check;
+		Total.yours.check += b.yours.check;
 
-        benchmark.run();
+		Total.cs50.size += b.cs50.size;
+		Total.yours.size += b.yours.size;
 
-        fmt::print("{}\n", benchmark);
+		Total.cs50.unload += b.cs50.unload;
+		Total.yours.unload += b.yours.unload;
 
-        // keep track of totals
-        average.cs50.load += benchmark.cs50.load / benchmarks.size();
-        average.yours.load += benchmark.yours.load / benchmarks.size();
+		Total.cs50.total += b.cs50.total;
+		Total.yours.total += b.yours.total;
+	}
 
-        average.cs50.check += benchmark.cs50.check / benchmarks.size();
-        average.yours.check += benchmark.yours.check / benchmarks.size();
-
-        average.cs50.size += benchmark.cs50.size / benchmarks.size();
-        average.yours.size += benchmark.yours.size / benchmarks.size();
-
-        average.cs50.unload += benchmark.cs50.unload / benchmarks.size();
-        average.yours.unload += benchmark.yours.unload / benchmarks.size();
-
-        average.cs50.total += benchmark.cs50.total / benchmarks.size();
-        average.yours.total += benchmark.yours.total / benchmarks.size();
-    }
-
-    fmt::print("\n{}\n", average);
+	fmt::print("\n{}\n", Total);
 } // main
 
-/**
- * @brief displays the error and exists with the errno
- */
+/// @brief displays the error and exists with code
 static void error_m(std::string_view message, int code) {
-    fmt::print(stderr, "Error: {}", message);
-    exit(code);
+	fmt::print(stderr, "Error: {}", message);
+	exit(code);
 }
