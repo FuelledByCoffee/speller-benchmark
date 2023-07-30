@@ -103,9 +103,7 @@ auto main(int argc, char *argv[]) -> int {
 			t.join();
 		}
 
-		std::ranges::sort(records, [](benchmark const &b1, benchmark const &b2) {
-			return b1.yours.total < b2.yours.total;
-		});
+		std::sort(std::begin(records), std::end(records));
 		fmt::print("{}\n", fmt::join(records, "\n"));
 	}
 

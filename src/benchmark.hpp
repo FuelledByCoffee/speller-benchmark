@@ -3,10 +3,8 @@
 #include <fmt/ostream.h>
 
 #include <filesystem>
-#include <mutex>
 #include <ostream>
 #include <string_view>
-#include <thread>
 
 struct record {
 	void run(std::string_view speller, std::filesystem::path const &txtfile);
@@ -68,6 +66,10 @@ class benchmark {
 		return *this;
 	}
 
+	auto operator<(benchmark const &other) const -> bool {
+		return yours.total < other.yours.total;
+	}
+
 	friend auto operator+(benchmark lhs, benchmark rhs) -> benchmark {
 		lhs += rhs;
 		return lhs;
@@ -84,10 +86,9 @@ class benchmark {
 	friend auto operator<<(std::ostream &os, benchmark const &results)
 			-> std::ostream &;
 
-
- public:
 	std::filesystem::path txt;
 
+ private:
 	record yours{};
 	record cs50{};
 
