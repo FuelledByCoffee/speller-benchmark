@@ -7,16 +7,8 @@
       {
          "type": "lldb",
          "request": "launch",
-         "name": "Launch",
+         "name": "lldb",
          "program": "${command:cmake.launchTargetPath}",
-         "args": [],
-         "cwd": "${workspaceFolder}/.."
-      },
-      {
-         "type": "lldb",
-         "request": "launch",
-         "name": "CTest",
-         "program": "${cmake.testProgram}",
          "args": [
             "{cmake.testArgs}"
          ],

@@ -5,14 +5,51 @@
 #include <fmt/printf.h>
 #include <fmt/std.h>
 
+#include <benchmark.hpp>
 #include <colors.hpp>
-#include <record.hpp>
 
-#include <iterator>
 #include <iostream>
+#include <iterator>
 #include <string_view>
 
-auto operator<<(std::ostream &os, record const &rec) -> std::ostream & {
+void record::run(std::string_view speller, std::string_view filename) {
+
+    std::string const command = fmt::format("./{} texts/{}", speller, filename);
+
+    // execute and parse user results
+    FILE *fpipe = popen(command.c_str(), "r");
+    if (!fpipe) {
+        success = false;
+        return;
+    }
+
+    char buffer[200];
+
+    // consume till stats
+    while (fgets(buffer, sizeof(buffer), fpipe))
+        if (strstr(buffer, "WORDS MISSPELLED") != NULL)
+            break;
+
+    sscanf(buffer, "WORDS MISSPELLED: %d\n", &misspelled);
+
+    // parse output
+    if (fscanf(fpipe,
+               "WORDS IN DICTIONARY:  %d\n"
+               "WORDS IN TEXT:        %d\n"
+               "TIME IN load:         %f\n"
+               "TIME IN check:        %f\n"
+               "TIME IN size:         %f\n"
+               "TIME IN unload:       %f\n"
+               "TIME IN TOTAL:        %f\n",
+               &dictionary, &text, &load, &check, &size, &unload,
+               &total) != 7) {
+        success = false;
+    }
+
+    pclose(fpipe);
+}
+
+auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
 
     /**
      * @returns string constant bold if num1 is less
@@ -31,61 +68,65 @@ auto operator<<(std::ostream &os, record const &rec) -> std::ostream & {
         return "";
     };
 
-    using namespace fmt::literals;
+    // using namespace fmt::literals;
 
-    fmt::format_to_n(std::ostream_iterator<char>(os), 16, "{: >16} ", rec.filename);
+    fmt::format_to_n(
+        std::ostream_iterator<decltype(rec.filename)::value_type>(os), 16,
+        "{: >16}", rec.filename);
+    os << ": ";
     std::fflush(stdout);
 
     // print status
-    if (rec.success)
-        os << fmt::format(fmt::emphasis::bold | fg(fmt::color::lawn_green), "OK\t");
+    if (rec.yours.success)
+        os << fmt::format(fmt::emphasis::bold | fg(fmt::color::lawn_green),
+                          "OK\t");
     else
         os << fmt::format(fmt::emphasis::bold | fg(fmt::color::red), "ERROR\t");
     os << fmt::format(C_RESET);
 
     // load
-    os << compare_times(rec.load.first, rec.load.second); // bold?
-    os << C_CS50 << std::fixed << std::setprecision(3) << rec.load.first
+    os << compare_times(rec.cs50.load, rec.yours.load); // bold?
+    os << C_CS50 << std::fixed << std::setprecision(3) << rec.cs50.load
        << C_RESET << '\t';
 
-    os << compare_times(rec.load.second, rec.load.first); // bold?
-    os << C_YOURS << std::fixed << std::setprecision(3) << rec.load.second
+    os << compare_times(rec.yours.load, rec.cs50.load); // bold?
+    os << C_YOURS << std::fixed << std::setprecision(3) << rec.yours.load
        << C_RESET << '\t';
 
     // check
-    os << compare_times(rec.check.first, rec.load.second); // bold?
-    os << C_CS50 << std::fixed << std::setprecision(3) << rec.check.first
+    os << compare_times(rec.cs50.check, rec.yours.check); // bold?
+    os << C_CS50 << std::fixed << std::setprecision(3) << rec.cs50.check
        << C_RESET << '\t';
 
-    os << compare_times(rec.check.second, rec.check.first); // bold?
-    os << C_YOURS << std::fixed << std::setprecision(3) << rec.check.second
+    os << compare_times(rec.yours.check, rec.cs50.check); // bold?
+    os << C_YOURS << std::fixed << std::setprecision(3) << rec.yours.check
        << C_RESET << '\t';
 
     // size
-    os << compare_times(rec.size.first, rec.load.second); // bold?
-    os << C_CS50 << std::fixed << std::setprecision(3) << rec.size.first
+    os << compare_times(rec.cs50.size, rec.yours.load); // bold?
+    os << C_CS50 << std::fixed << std::setprecision(3) << rec.cs50.size
        << C_RESET << '\t';
 
-    os << compare_times(rec.size.second, rec.size.first); // bold?
-    os << C_YOURS << std::fixed << std::setprecision(3) << rec.check.second
+    os << compare_times(rec.yours.size, rec.cs50.size); // bold?
+    os << C_YOURS << std::fixed << std::setprecision(3) << rec.yours.check
        << C_RESET << '\t';
 
     // unload
-    os << compare_times(rec.unload.first, rec.unload.second); // bold?
-    os << C_CS50 << std::fixed << std::setprecision(3) << rec.unload.first
+    os << compare_times(rec.cs50.unload, rec.yours.unload); // bold?
+    os << C_CS50 << std::fixed << std::setprecision(3) << rec.cs50.unload
        << C_RESET << '\t';
 
-    os << compare_times(rec.unload.second, rec.unload.first); // bold?
-    os << C_YOURS << std::fixed << std::setprecision(3) << rec.unload.second
+    os << compare_times(rec.yours.unload, rec.cs50.unload); // bold?
+    os << C_YOURS << std::fixed << std::setprecision(3) << rec.yours.unload
        << C_RESET << '\t';
 
     // total
-    os << compare_times(rec.total.first, rec.total.second); // bold?
-    os << C_CS50 << std::fixed << std::setprecision(3) << rec.total.first
+    os << compare_times(rec.cs50.total, rec.yours.total); // bold?
+    os << C_CS50 << std::fixed << std::setprecision(3) << rec.cs50.total
        << C_RESET << '\t';
 
-    os << compare_times(rec.total.second, rec.total.first); // bold?
-    os << C_YOURS << std::fixed << std::setprecision(3) << rec.total.second
+    os << compare_times(rec.yours.total, rec.cs50.total); // bold?
+    os << C_YOURS << std::fixed << std::setprecision(3) << rec.yours.total
        << C_RESET << '\t';
 
     return os;

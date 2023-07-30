@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.21.0)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-include(cmake/vcpkg.cmake) # Must set toolchain file before calling project()
+include(vcpkg) # Must set toolchain file before calling project()
 
 project(speller-benchmark VERSION 2.0 LANGUAGES CXX)
 
@@ -20,7 +20,6 @@ enable_warnings()
 enable_sanitizers()
 
 add_subdirectory(src)
-add_subdirectory(tests)
 
 get_filename_component(PARENT_DIR ../ ABSOLUTE)
 set(SPELLER_LOCATION "${PARENT_DIR}" CACHE STRING "The location of your cs50 project directory")
@@ -45,3 +44,17 @@ if(COMPARE_SPELLER50)
 endif()
 
 install(TARGETS bench DESTINATION ${SPELLER_LOCATION})
+
+include(CTest)
+add_test(NAME single_thread
+	COMMAND bench -1
+	WORKING_DIRECTORY ${SPELLER_LOCATION})
+add_test(NAME multi_thread
+	COMMAND bench
+	WORKING_DIRECTORY ${SPELLER_LOCATION})
+add_test(NAME single_thread_with_staff
+	COMMAND bench -1t
+	WORKING_DIRECTORY ${SPELLER_LOCATION})
+add_test(NAME multi_thread_with_staff
+	COMMAND bench -t
+	WORKING_DIRECTORY ${SPELLER_LOCATION})

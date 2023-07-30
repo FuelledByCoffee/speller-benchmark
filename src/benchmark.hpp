@@ -1,34 +1,56 @@
 #pragma once
 
-#include <fmt/color.h>
-#include <fmt/core.h>
-#include <fmt/format.h>
-#include <fmt/printf.h>
-#include <fmt/std.h>
+#include <fmt/ostream.h>
 
 #include <filesystem>
-#include <iostream>
+#include <mutex>
+#include <ostream>
 #include <string>
-#include <utility>
+#include <string_view>
+#include <thread>
 
 struct record {
-    std::string filename{};
-    std::filesystem::path path{};
+    void run(std::string_view speller, std::string_view filename);
 
-    std::pair<int, int> misspelled{};
-    std::pair<int, int> dictionary{};
-    std::pair<int, int> text{};
+    int misspelled{};
+    int dictionary{};
+    int text{};
 
-    std::pair<float, float> load{};
-    std::pair<float, float> check{};
-    std::pair<float, float> size{};
-    std::pair<float, float> unload{};
-    std::pair<float, float> total{};
+    float load{};
+    float check{};
+    float size{};
+    float unload{};
+    float total{};
 
-    bool success{};
-
-    friend auto operator<<(std::ostream &os, record const &rec)
-        -> std::ostream &;
+    bool success = true;
 };
 
-template <> struct fmt::formatter<record> : ostream_formatter {};
+class benchmark {
+  public:
+    benchmark() = default;
+    benchmark(std::string_view f_name, bool bench_staff, bool multithread) //
+        : filename(f_name), m_staff(bench_staff) {
+            // if (multithread) {
+            //     t1 = std::thread(&benchmark::run, this);
+            // }
+        }
+
+    void run() {
+        if (m_staff)
+            cs50.run("speller50", filename);
+        yours.run("speller", filename);
+    }
+
+    friend auto operator<<(std::ostream &os, benchmark const &results)
+        -> std::ostream &;
+
+    std::string filename{};
+    std::thread t1;
+
+    record yours{};
+    record cs50{};
+
+    bool m_staff = false;
+};
+
+template <> struct fmt::formatter<benchmark> : ostream_formatter {};

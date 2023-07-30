@@ -1,7 +1,5 @@
 #pragma once
 
-#include <fmt/color.h>
-
 // output constants
 #define C_CLEAR  "\033[2J\033[1;1H"
 #define C_RESET  "\e[m"
@@ -15,4 +13,3 @@
 #define C_BWHITE "\e[47m"
 #define C_CS50   C_CYAN
 #define C_YOURS  C_YELLOW
-#define PCAST    (void *(*)(void *))

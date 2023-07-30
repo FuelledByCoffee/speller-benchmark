@@ -13,6 +13,7 @@
  * @Fuelled_By_Coffee
  * add multithreading
  * fix uninitialized memory bug
+ * Port to C++
  *
  * - Johannes "Fuelled_By_Coffee" Eckhoff j.eckhoff@gmail.com
  */
@@ -21,7 +22,6 @@
 #include <colors.hpp>
 #include <version.hpp>
 
-#include <cmath>
 #include <string_view>
 #include <vector>
 
@@ -40,16 +40,16 @@ static bool includeStaff = true;
 static bool includeStaff = false;
 #endif
 
-int main() {
+int main(int argc, char *argv[]) {
     const char *cs50_speller = "./speller50";
-    // bool multithreading = true;
-    // int arg = 0;
-    // while ((arg = getopt(argc, argv, "1ts:")) != -1) {
-    //     if (arg == '1')
-    //         multithreading = false;
-    //     else if (arg == 't')
-    //         includeStaff = true;
-    // }
+    bool multithreading = true;
+    int arg = 0;
+    while ((arg = getopt(argc, argv, "1t:")) != -1) {
+        if (arg == '1')
+            multithreading = false;
+        else if (arg == 't')
+            includeStaff = true;
+    }
 
     // make sure speller program exists
     if (access("speller", X_OK) == -1)
@@ -71,7 +71,7 @@ int main() {
         if (dir->d_name[0] == '.')
             continue;
 
-        benchmarks.emplace_back(dir->d_name, includeStaff);
+        benchmarks.emplace_back(dir->d_name, includeStaff, multithreading);
     }
 
     closedir(dirp);
@@ -79,10 +79,12 @@ int main() {
     // clear screen
     fmt::print(C_CLEAR);
 
+    // clang-format off
     // print header
-    fmt::print("\t" C_CS50 "Cyan   " C_RESET "- CS50's implementation\n");
+    fmt::print("\t" C_CS50  "Cyan   " C_RESET "- CS50's implementation\n");
     fmt::print("\t" C_YOURS "Yellow " C_RESET "- your implementation\n");
-    fmt::print("\t" C_BOLD "Bold   " C_RESET "- lesser time\n");
+    fmt::print("\t" C_BOLD  "Bold   " C_RESET "- lesser time\n");
+    // clang-format on
 
     fmt::print("\n");
     fmt::print("{: >16} ", "Filename");
@@ -98,6 +100,8 @@ int main() {
     average.filename = "Average";
 
     for (auto &benchmark : benchmarks) {
+
+        benchmark.run();
 
         fmt::print("{}\n", benchmark);
 
@@ -118,7 +122,6 @@ int main() {
         average.yours.total += benchmark.yours.total / benchmarks.size();
     }
 
-    // display averages
     fmt::print("\n{}\n", average);
 } // main
 
