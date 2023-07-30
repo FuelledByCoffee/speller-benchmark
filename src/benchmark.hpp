@@ -47,8 +47,7 @@ struct record {
 
 class benchmark {
  public:
-	benchmark()                       = default;
-	benchmark(benchmark const &other) = default;
+	benchmark() = default;
 
 	benchmark(std::filesystem::path const &txtfile, bool bench_staff) //
 		: txt(txtfile), m_staff(bench_staff) {
