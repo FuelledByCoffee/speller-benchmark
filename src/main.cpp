@@ -69,12 +69,12 @@ int main(int argc, char *argv[]) {
 
 	namespace fs = std::filesystem;
 
-	fs::path text_files(CS50_TEXTS);
-	auto     count = std::distance(fs::directory_iterator{text_files},
-	                               fs::directory_iterator{});
+	fs::path   text_files(CS50_TEXTS);
+	auto const count = std::distance(fs::directory_iterator{text_files},
+	                                 fs::directory_iterator{});
 
 	std::vector<benchmark> records{};
-	records.reserve(count + 1);
+	records.reserve(count);
 	benchmark total{"Total", false};
 
 	for (auto const &txt : std::filesystem::directory_iterator{text_files}) {
@@ -85,13 +85,15 @@ int main(int argc, char *argv[]) {
 
 	for (auto const &txt : fs::directory_iterator{text_files}) {
 		assert(txt.is_regular_file() && "Non text file found in texts dir");
-		benchmark b{txt.path(), includeStaff};
+		records.emplace_back(txt.path(), includeStaff);
+
+		auto &b = records.back();
 
 		b.run();
 		total += b;
 	}
 
-	std::ranges::sort(records, [](benchmark const b1, benchmark const b2) {
+	std::ranges::sort(records, [](benchmark const &b1, benchmark const &b2) {
 		return b1.yours.total < b2.yours.total;
 	});
 
