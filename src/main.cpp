@@ -29,6 +29,7 @@
 #include <vector>
 
 #include <fmt/color.h>
+#include <fmt/ranges.h>
 #include <fmt/std.h>
 
 #include <dirent.h>
@@ -45,9 +46,9 @@ static bool includeStaff = false;
 #endif
 
 int main(int argc, char *argv[]) {
-	const char *cs50_speller = "./speller50";
-	bool multithreading = true;
-	int arg = 0;
+	std::string_view cs50_speller   = "./speller50";
+	bool             multithreading = true;
+	int              arg            = 0;
 	while ((arg = getopt(argc, argv, "1t:")) != -1) {
 		if (arg == '1')
 			multithreading = false;
@@ -58,10 +59,10 @@ int main(int argc, char *argv[]) {
 	// make sure speller program exists
 	if (access("speller", X_OK) == -1)
 		error_m("speller binary does not exist, please compile it and place it "
-				"in the current directory\n",
-				1);
+		        "in the current directory\n",
+		        1);
 
-	if (includeStaff && access(cs50_speller, X_OK) == -1)
+	if (includeStaff && access(cs50_speller.data(), X_OK) == -1)
 		error_m("Staff speller cannot be opened\n", 1);
 
 	print_results_header();
@@ -69,11 +70,12 @@ int main(int argc, char *argv[]) {
 	namespace fs = std::filesystem;
 
 	fs::path text_files(CS50_TEXTS);
-	auto count = std::distance(fs::directory_iterator{text_files}, fs::directory_iterator{});
+	auto     count = std::distance(fs::directory_iterator{text_files},
+	                               fs::directory_iterator{});
 
 	std::vector<benchmark> records{};
 	records.reserve(count + 1);
-	benchmark Total{"Total", false};
+	benchmark total{"Total", false};
 
 	for (auto const &txt : std::filesystem::directory_iterator{text_files}) {
 		if (multithreading) {
@@ -86,27 +88,19 @@ int main(int argc, char *argv[]) {
 		benchmark b{txt.path(), includeStaff};
 
 		b.run();
-
-		fmt::print("{}\n", b);
-
-		// keep track of totals
-		Total.cs50.load += b.cs50.load;
-		Total.yours.load += b.yours.load;
-
-		Total.cs50.check += b.cs50.check;
-		Total.yours.check += b.yours.check;
-
-		Total.cs50.size += b.cs50.size;
-		Total.yours.size += b.yours.size;
-
-		Total.cs50.unload += b.cs50.unload;
-		Total.yours.unload += b.yours.unload;
-
-		Total.cs50.total += b.cs50.total;
-		Total.yours.total += b.yours.total;
+		total += b;
 	}
 
-	fmt::print("\n{}\n", Total);
+	std::ranges::sort(records, [](benchmark const b1, benchmark const b2) {
+		return b1.yours.total < b2.yours.total;
+	});
+
+	benchmark average = total / count;
+	average.txt       = fs::path{"Average"};
+
+	fmt::print("{}\n", fmt::join(records, "\n"));
+	fmt::print("\n{}\n", total);
+	fmt::print("{}\n", average);
 } // main
 
 /// @brief displays the error and exists with code

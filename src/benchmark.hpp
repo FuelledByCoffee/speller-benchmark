@@ -22,11 +22,41 @@ struct record {
 	float total{};
 
 	bool success = true;
+
+	auto operator+=(record const &other) -> record & {
+		misspelled += other.misspelled;
+		dictionary += other.dictionary;
+		text       += other.text;
+
+		load   += other.load;
+		check  += other.check;
+		size   += other.size;
+		unload += other.unload;
+		total  += other.total;
+
+		return *this;
+	}
+
+	template <typename Int = int>
+	auto operator/=(Int divisor) -> record & {
+		misspelled /= divisor;
+		dictionary /= divisor;
+		text       /= divisor;
+
+		load   /= divisor;
+		check  /= divisor;
+		size   /= divisor;
+		unload /= divisor;
+		total  /= divisor;
+
+		return *this;
+	}
 };
 
 class benchmark {
-  public:
+ public:
 	benchmark() = default;
+
 	benchmark(std::filesystem::path const &txtfile, bool bench_staff) //
 		: txt(txtfile), m_staff(bench_staff) {
 		// if (multithread) {
@@ -35,13 +65,26 @@ class benchmark {
 	}
 
 	void run() {
-		if (m_staff)
-			cs50.run("speller50", txt);
+		if (m_staff) cs50.run("speller50", txt);
 		yours.run("speller", txt);
 	}
 
+	auto operator+=(benchmark const &other) -> benchmark & {
+		yours += other.yours;
+		cs50  += other.cs50;
+		return *this;
+	}
+
+	template <typename Int = int>
+	friend auto operator/(benchmark b, Int divisor) -> benchmark {
+		b.yours /= divisor;
+		b.cs50  /= divisor;
+
+		return b;
+	}
+
 	friend auto operator<<(std::ostream &os, benchmark const &results)
-		-> std::ostream &;
+			-> std::ostream &;
 
 	std::filesystem::path txt;
 
@@ -51,4 +94,5 @@ class benchmark {
 	bool m_staff = false;
 };
 
-template <> struct fmt::formatter<benchmark> : ostream_formatter {};
+template <>
+struct fmt::formatter<benchmark> : ostream_formatter {};
