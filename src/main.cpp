@@ -79,12 +79,12 @@ auto main(int argc, char *argv[]) -> int {
 	auto const count = file_count(text_files);
 	if (count == 0) exit(2);
 
-	std::vector<benchmark>   records{};
+	std::vector<benchmark>   records;
 	std::vector<std::thread> threads;
 	records.reserve(count);
 	threads.reserve(count);
 
-	for (auto const &txt : std::filesystem::directory_iterator{text_files}) {
+	for (auto const &txt : fs::directory_iterator{text_files}) {
 		assert(txt.is_regular_file() && "Non text file found in texts dir");
 		records.emplace_back(txt.path(), includeStaff);
 	}
