@@ -8,31 +8,37 @@
 #include <benchmark.hpp>
 #include <colors.hpp>
 
-#include <iostream>
+#include <ostream>
+#include <memory>
+#include <thread>
 #include <iterator>
 #include <string_view>
+
+#include <cstdio>
 
 void record::run(std::string_view speller, std::filesystem::path const &path) {
 
 	std::string const command = fmt::format("./{} {}", speller, path.c_str());
 
+	std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command.c_str(), "r"), pclose); 
+
 	// execute and parse user results
-	FILE *fpipe = popen(command.c_str(), "r");
-	if (!fpipe) {
+	if (!pipe) {
+		fmt::print(stderr, "Opening text file {} in thread {} failed\n", path.filename(), std::this_thread::get_id());
 		success = false;
 		return;
 	}
 
-	char buffer[200];
+	std::array<char, 200> buffer;
 
 	// consume till stats
-	while (fgets(buffer, sizeof(buffer), fpipe))
-		if (strstr(buffer, "WORDS MISSPELLED") != NULL) break;
+	while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr)
+		if (strstr(buffer.data(), "WORDS MISSPELLED") != NULL) break;
 
-	sscanf(buffer, "WORDS MISSPELLED: %d\n", &misspelled);
+	sscanf(buffer.data(), "WORDS MISSPELLED: %d\n", &misspelled);
 
 	// parse output
-	if (fscanf(fpipe,
+	if (fscanf(pipe.get(),
 	           "WORDS IN DICTIONARY:  %d\n"
 	           "WORDS IN TEXT:        %d\n"
 	           "TIME IN load:         %f\n"
@@ -44,8 +50,6 @@ void record::run(std::string_view speller, std::filesystem::path const &path) {
 	    != 7) {
 		success = false;
 	}
-
-	pclose(fpipe);
 }
 
 auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
