@@ -76,10 +76,16 @@ class benchmark {
 	}
 
 	template <typename Int = int>
-	friend auto operator/(benchmark b, Int divisor) -> benchmark {
-		b.yours /= divisor;
-		b.cs50  /= divisor;
+	auto operator/=(Int divisor) -> benchmark & {
+		yours /= divisor;
+		cs50  /= divisor;
 
+		return *this;
+	}
+
+	template <typename Int = int>
+	friend auto operator/(benchmark b, Int divisor) -> benchmark {
+		b /= divisor;
 		return b;
 	}
 
