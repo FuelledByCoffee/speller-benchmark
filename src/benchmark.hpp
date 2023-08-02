@@ -31,7 +31,7 @@ struct record {
 		return *this;
 	}
 
-	friend auto operator+(record lhs, record rhs) -> record {
+	friend auto operator+(record lhs, record const &rhs) -> record {
 		lhs += rhs;
 		return lhs;
 	}
@@ -70,7 +70,7 @@ class benchmark {
 		return yours.total < other.yours.total;
 	}
 
-	friend auto operator+(benchmark lhs, benchmark rhs) -> benchmark {
+	friend auto operator+(benchmark lhs, benchmark const &rhs) -> benchmark {
 		lhs += rhs;
 		return lhs;
 	}
