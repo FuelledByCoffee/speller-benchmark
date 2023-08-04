@@ -60,14 +60,14 @@ class benchmark {
 		yours.run("speller", txt);
 	}
 
+	auto operator<(benchmark const &other) const -> bool {
+		return yours.total < other.yours.total;
+	}
+
 	auto operator+=(benchmark const &other) -> benchmark & {
 		yours += other.yours;
 		cs50  += other.cs50;
 		return *this;
-	}
-
-	auto operator<(benchmark const &other) const -> bool {
-		return yours.total < other.yours.total;
 	}
 
 	friend auto operator+(benchmark lhs, benchmark const &rhs) -> benchmark {
@@ -76,10 +76,16 @@ class benchmark {
 	}
 
 	template <typename Int = int>
-	friend auto operator/(benchmark b, Int divisor) -> benchmark {
-		b.yours /= divisor;
-		b.cs50  /= divisor;
+	auto operator/=(Int divisor) -> benchmark & {
+		yours /= divisor;
+		cs50  /= divisor;
 
+		return *this;
+	}
+
+	template <typename Int = int>
+	friend auto operator/(benchmark b, Int divisor) -> benchmark {
+		b /= divisor;
 		return b;
 	}
 
