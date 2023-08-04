@@ -34,8 +34,8 @@
 #include <fmt/ranges.h>
 #include <fmt/std.h>
 
-#include <unistd.h>
 #include <getopt.h>
+#include <unistd.h>
 
 #define CS50_TEXTS "texts"
 
