@@ -41,7 +41,7 @@
 
 namespace fs = std::filesystem;
 
-static auto file_count(fs::path dir) noexcept ->
+static auto file_count(fs::path const &dir) noexcept ->
 		typename std::iterator_traits<fs::directory_iterator>::difference_type;
 
 
@@ -124,7 +124,7 @@ static void error_m(std::string_view message, int code) {
 	exit(code);
 }
 
-static auto file_count(fs::path dir) noexcept ->
+static auto file_count(fs::path const &dir) noexcept ->
 		typename std::iterator_traits<fs::directory_iterator>::difference_type {
 	fs::directory_iterator i;
 	try {
