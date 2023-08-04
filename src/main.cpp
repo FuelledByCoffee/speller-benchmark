@@ -126,12 +126,11 @@ static void error_m(std::string_view message, int code) {
 
 static auto file_count(fs::path const &dir) noexcept ->
 		typename std::iterator_traits<fs::directory_iterator>::difference_type {
-	fs::directory_iterator i;
 	try {
-		i = fs::directory_iterator{dir};
+		return std::distance(fs::directory_iterator{dir},
+		                     fs::directory_iterator{});
 	} catch (const std::exception &e) {
 		fmt::print(stderr, "{}\n", e.what());
 		return 0;
 	}
-	return std::distance(i, fs::directory_iterator{});
 }
