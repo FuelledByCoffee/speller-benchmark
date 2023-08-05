@@ -51,9 +51,12 @@ add_test(NAME single_thread
 add_test(NAME multi_thread
 	COMMAND bench
 	WORKING_DIRECTORY ${SPELLER_LOCATION})
-add_test(NAME single_thread_with_staff
-	COMMAND bench -1t
-	WORKING_DIRECTORY ${SPELLER_LOCATION})
-add_test(NAME multi_thread_with_staff
-	COMMAND bench -t
-	WORKING_DIRECTORY ${SPELLER_LOCATION})
+
+if(COMPARE_SPELLER50)
+	add_test(NAME single_thread_with_staff
+		COMMAND bench -1t
+		WORKING_DIRECTORY ${SPELLER_LOCATION})
+	add_test(NAME multi_thread_with_staff
+		COMMAND bench -t
+		WORKING_DIRECTORY ${SPELLER_LOCATION})
+endif()

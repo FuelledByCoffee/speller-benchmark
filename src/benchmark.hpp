@@ -31,9 +31,9 @@ struct record {
 		return *this;
 	}
 
-	friend auto operator+(record lhs, record const &rhs) -> record {
-		lhs += rhs;
-		return lhs;
+	auto operator+(record other) const -> record {
+		other += *this;
+		return other;
 	}
 
 	template <typename Int>
@@ -70,9 +70,9 @@ class benchmark {
 		return *this;
 	}
 
-	friend auto operator+(benchmark lhs, benchmark const &rhs) -> benchmark {
-		lhs += rhs;
-		return lhs;
+	auto operator+(benchmark rhs) const -> benchmark {
+		rhs += *this;
+		return rhs;
 	}
 
 	template <typename Int = int>
