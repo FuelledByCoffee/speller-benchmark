@@ -111,7 +111,7 @@ auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
 		<< C_RESET << '\t';
 
 	os << compare_times(rec.yours.size, rec.cs50.size); // bold?
-	os << C_YOURS << std::fixed << std::setprecision(3) << rec.yours.check
+	os << C_YOURS << std::fixed << std::setprecision(3) << rec.yours.size
 		<< C_RESET << '\t';
 
 	// unload
