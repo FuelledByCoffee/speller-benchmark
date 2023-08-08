@@ -58,11 +58,15 @@ auto main(int argc, char *argv[]) -> int {
 	std::string_view cs50_speller   = "./speller50";
 	bool             multithreading = true;
 	int              arg            = 0;
-	while ((arg = getopt(argc, argv, "1t:")) != -1) {
+	while ((arg = getopt(argc, argv, "1sy")) != -1) {
 		if (arg == '1')
 			multithreading = false;
-		else if (arg == 't')
+		else if (arg == 's')
 			includeStaff = true;
+		else if (arg == 'y')
+			includeStaff = false;
+		else if (arg == '?')
+			error_m("Invalid flag\n", 1);
 	}
 
 	// make sure speller program exists
