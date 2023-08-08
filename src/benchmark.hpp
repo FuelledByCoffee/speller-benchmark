@@ -60,10 +60,25 @@ class benchmark {
 		yours.run("speller", txt);
 	}
 
-	auto operator<(benchmark const &other) const -> bool {
-		return yours.total < other.yours.total;
+	friend auto operator<(benchmark const &left, benchmark const &right) {
+		return left.yours.total < right.yours.total;
 	}
-
+	friend auto operator>(benchmark const &left, benchmark const &right) {
+		return right < left;
+	}
+	friend auto operator<=(benchmark const &left, benchmark const &right) {
+		return !(right < left);
+	}
+	friend auto operator>=(benchmark const &left, benchmark const &right) {
+		return !(right > left);
+	}
+	friend auto operator==(benchmark const &left, benchmark const &right) {
+		return left.yours.total == right.yours.total;
+	}
+	friend auto operator!=(benchmark const &left, benchmark const &right) {
+		return !(left == right);
+	}
+	
 	auto operator+=(benchmark const &other) -> benchmark & {
 		yours += other.yours;
 		cs50  += other.cs50;
