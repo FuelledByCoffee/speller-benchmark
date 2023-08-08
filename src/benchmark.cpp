@@ -55,19 +55,20 @@ void record::run(std::string_view speller, std::filesystem::path const &path) {
 
 auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
 
-	/**
-	 * @returns string constant bold if num1 is less
-	 */
-	auto compare_times = [epsilon = std::numeric_limits<float>::epsilon()](
-										float num1, float num2) {
+	/// @brief bold or not for smaller value
+	auto compare_times =
+			[epsilon = std::numeric_limits<float>::epsilon()](
+					float num1,
+					float num2) -> std::pair<fmt::text_style, fmt::text_style> {
 		// no staff solution or just small diff
 		if (fminf(num1, num2) < epsilon || fabsf(num1 - num2) <= epsilon)
-			return "";
+			return {fmt::text_style{}, fmt::text_style{}};
 
-		if (num1 < num2) return C_BOLD;
+		if (num1 < num2)
+			return {fmt::text_style{fmt::emphasis::bold}, fmt::text_style{}};
 
-		// num2 greater
-		return "";
+		// num2 wins, is smaller
+		return {fmt::text_style{}, fmt::text_style{fmt::emphasis::bold}};
 	};
 
 	// using namespace fmt::literals;
@@ -87,16 +88,13 @@ auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
 		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::lawn_green),
 		                  "OK\t");
 
-	os << fmt::format(C_RESET);
-
 	auto print_val = [&os, compare_times](float cs50, float yours) {
-		auto bold = compare_times(cs50, yours);
-		os << bold << C_CS50 << std::fixed << std::setprecision(3) << cs50
-			<< C_RESET << '\t';
+		auto [staff_bold, your_bold] = compare_times(cs50, yours);
+		os << fmt::format("{:.3f}", fmt::styled(cs50, staff_bold | cs50_color))
+			<< '\t';
 
-		bold = compare_times(yours, cs50);
-		os << bold << C_YOURS << std::fixed << std::setprecision(3) << yours
-			<< C_RESET << '\t';
+		os << fmt::format("{:.3f}", fmt::styled(yours, your_bold | your_color))
+			<< '\t';
 	};
 
 	print_val(rec.cs50.load, rec.yours.load);
