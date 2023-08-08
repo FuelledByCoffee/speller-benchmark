@@ -9,8 +9,8 @@
 #include <colors.hpp>
 
 #include <iterator>
-#include <memory>
 #include <limits>
+#include <memory>
 #include <ostream>
 #include <string_view>
 #include <thread>
@@ -60,9 +60,8 @@ auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
 	/**
 	 * @returns string constant bold if num1 is less
 	 */
-	auto compare_times = [](float num1, float num2) {
-		const auto epsilon = std::numeric_limits<float>::epsilon();
-
+	auto compare_times = [epsilon = std::numeric_limits<float>::epsilon()](
+										float num1, float num2) {
 		// no staff solution or just small diff
 		if (fminf(num1, num2) < epsilon || fabsf(num1 - num2) <= epsilon)
 			return "";
@@ -88,50 +87,21 @@ auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
 		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::red), "ERROR\t");
 	os << fmt::format(C_RESET);
 
-	// load
-	os << compare_times(rec.cs50.load, rec.yours.load); // bold?
-	os << C_CS50 << std::fixed << std::setprecision(3) << rec.cs50.load
-		<< C_RESET << '\t';
+	auto print_val = [&os, compare_times](float cs50, float yours) {
+		auto bold = compare_times(cs50, yours);
+		os << bold << C_CS50 << std::fixed << std::setprecision(3) << cs50
+			<< C_RESET << '\t';
 
-	os << compare_times(rec.yours.load, rec.cs50.load); // bold?
-	os << C_YOURS << std::fixed << std::setprecision(3) << rec.yours.load
-		<< C_RESET << '\t';
+		bold = compare_times(yours, cs50);
+		os << bold << C_YOURS << std::fixed << std::setprecision(3) << yours
+			<< C_RESET << '\t';
+	};
 
-	// check
-	os << compare_times(rec.cs50.check, rec.yours.check); // bold?
-	os << C_CS50 << std::fixed << std::setprecision(3) << rec.cs50.check
-		<< C_RESET << '\t';
-
-	os << compare_times(rec.yours.check, rec.cs50.check); // bold?
-	os << C_YOURS << std::fixed << std::setprecision(3) << rec.yours.check
-		<< C_RESET << '\t';
-
-	// size
-	os << compare_times(rec.cs50.size, rec.yours.load); // bold?
-	os << C_CS50 << std::fixed << std::setprecision(3) << rec.cs50.size
-		<< C_RESET << '\t';
-
-	os << compare_times(rec.yours.size, rec.cs50.size); // bold?
-	os << C_YOURS << std::fixed << std::setprecision(3) << rec.yours.size
-		<< C_RESET << '\t';
-
-	// unload
-	os << compare_times(rec.cs50.unload, rec.yours.unload); // bold?
-	os << C_CS50 << std::fixed << std::setprecision(3) << rec.cs50.unload
-		<< C_RESET << '\t';
-
-	os << compare_times(rec.yours.unload, rec.cs50.unload); // bold?
-	os << C_YOURS << std::fixed << std::setprecision(3) << rec.yours.unload
-		<< C_RESET << '\t';
-
-	// total
-	os << compare_times(rec.cs50.total, rec.yours.total); // bold?
-	os << C_CS50 << std::fixed << std::setprecision(3) << rec.cs50.total
-		<< C_RESET << '\t';
-
-	os << compare_times(rec.yours.total, rec.cs50.total); // bold?
-	os << C_YOURS << std::fixed << std::setprecision(3) << rec.yours.total
-		<< C_RESET << '\t';
+	print_val(rec.cs50.load, rec.yours.load);
+	print_val(rec.cs50.check, rec.yours.check);
+	print_val(rec.cs50.size, rec.yours.size);
+	print_val(rec.cs50.unload, rec.yours.unload);
+	print_val(rec.cs50.total, rec.yours.total);
 
 	return os;
 }
