@@ -98,6 +98,7 @@ auto main(int argc, char *argv[]) -> int {
 		if (!multithreading) {
 			b.run();
 			fmt::print("{}\n", b);
+			std::fflush(stdout); 
 		} else {
 			threads.emplace_back(&benchmark::run, &b);
 		}

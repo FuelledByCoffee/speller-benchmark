@@ -75,7 +75,6 @@ auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
 	fmt::format_to_n(std::ostream_iterator<decltype(rec.txt)::value_type>(os),
 	                 16, "{: >16}", rec.txt.stem().native());
 	os << ": ";
-	std::fflush(stdout);
 
 	// print status
 	if (rec.yours.success)
