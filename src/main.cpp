@@ -23,7 +23,7 @@
 #include <results.hpp>
 #include <version.hpp>
 
-#include <assert.h>
+#include <cassert>
 #include <filesystem>
 #include <iterator>
 #include <numeric>
