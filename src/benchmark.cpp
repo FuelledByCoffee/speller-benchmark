@@ -2,20 +2,18 @@
 #include <fmt/color.h>
 #include <fmt/core.h>
 #include <fmt/format.h>
-#include <fmt/printf.h>
 #include <fmt/std.h>
 
 #include <benchmark.hpp>
 #include <colors.hpp>
 
+#include <cstdio>
 #include <iterator>
 #include <limits>
 #include <memory>
 #include <ostream>
 #include <string_view>
 #include <thread>
-
-#include <cstdio>
 
 void record::run(std::string_view speller, std::filesystem::path const &path) {
 
