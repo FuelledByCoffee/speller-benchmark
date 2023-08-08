@@ -10,6 +10,7 @@
 
 #include <iterator>
 #include <memory>
+#include <limits>
 #include <ostream>
 #include <string_view>
 #include <thread>
@@ -60,7 +61,7 @@ auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
 	 * @returns string constant bold if num1 is less
 	 */
 	auto compare_times = [](float num1, float num2) {
-		const float epsilon = 0.0001F;
+		const auto epsilon = std::numeric_limits<float>::epsilon();
 
 		// no staff solution or just small diff
 		if (fminf(num1, num2) < epsilon || fabsf(num1 - num2) <= epsilon)
@@ -111,7 +112,7 @@ auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
 		<< C_RESET << '\t';
 
 	os << compare_times(rec.yours.size, rec.cs50.size); // bold?
-	os << C_YOURS << std::fixed << std::setprecision(3) << rec.yours.check
+	os << C_YOURS << std::fixed << std::setprecision(3) << rec.yours.size
 		<< C_RESET << '\t';
 
 	// unload
