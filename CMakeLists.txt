@@ -34,7 +34,7 @@ if(COMPARE_SPELLER50)
 		RESULT_VARIABLE SPELLER50_RESULT)
 
 	if(SPELLER50_RESULT EQUAL 0)
-		message(STATUS "speller50 exected successfully")
+		message(STATUS "speller50 executed successfully")
 		target_compile_definitions(bench PRIVATE COMPARE_STAFF)
 	else()
 		message(WARNING "speller50 exited with the result: ${SPELLER50_RESULT}, disabling COMPARE_SPELLER50")
