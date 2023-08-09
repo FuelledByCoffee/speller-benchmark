@@ -11,8 +11,7 @@ Run `./bench` from your speller directory after installing.
 ### Building
 -----------
 ```sh
-cmake -B build
-cmake --build build -t install
+make
 ```
 
 
