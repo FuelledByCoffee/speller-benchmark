@@ -1,6 +1,5 @@
 
 #include <fmt/color.h>
-#include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/std.h>
 
@@ -14,6 +13,22 @@
 #include <ostream>
 #include <string_view>
 #include <thread>
+
+static auto const epsilon = std::numeric_limits<float>::epsilon();
+
+/// @brief bold or not for smaller value
+[[nodiscard]] static auto compare_times(float num1, float num2)
+		-> std::pair<fmt::text_style, fmt::text_style> {
+	// no staff solution or just small diff
+	if (fminf(num1, num2) < epsilon || fabsf(num1 - num2) <= epsilon)
+		return {fmt::text_style{}, fmt::text_style{}};
+
+	if (num1 < num2)
+		return {fmt::text_style{fmt::emphasis::bold}, fmt::text_style{}};
+
+	// num2 wins, is smaller
+	return {fmt::text_style{}, fmt::text_style{fmt::emphasis::bold}};
+}
 
 void record::run(std::string_view speller, std::filesystem::path const &path) {
 
@@ -55,47 +70,28 @@ void record::run(std::string_view speller, std::filesystem::path const &path) {
 
 auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
 
-	/// @brief bold or not for smaller value
-	auto compare_times =
-			[epsilon = std::numeric_limits<float>::epsilon()](
-					float num1,
-					float num2) -> std::pair<fmt::text_style, fmt::text_style> {
-		// no staff solution or just small diff
-		if (fminf(num1, num2) < epsilon || fabsf(num1 - num2) <= epsilon)
-			return {fmt::text_style{}, fmt::text_style{}};
-
-		if (num1 < num2)
-			return {fmt::text_style{fmt::emphasis::bold}, fmt::text_style{}};
-
-		// num2 wins, is smaller
-		return {fmt::text_style{}, fmt::text_style{fmt::emphasis::bold}};
-	};
-
-	// using namespace fmt::literals;
-
 	fmt::format_to_n(std::ostream_iterator<decltype(rec.txt)::value_type>(os),
 	                 16, "{: >16}", rec.txt.stem().native());
 	os << ": ";
 
 	// print status
 	if (!rec.yours.success) {
-		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::red), "ERROR\t\t");
+		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::red), "{: <10}",
+		                  "ERROR");
 	} else if (rec.cs50.dictionary != 0 // a stand in for include staff
 	           && rec.cs50.misspelled != rec.yours.misspelled) {
-		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::yellow),
-		                  "MISMATCH\t");
+		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::yellow), "{: <10}",
+		                  "MISMATCH");
 	} else {
 		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::lawn_green),
-		                  "OK\t\t");
+		                  "{: <10}", "OK");
 	}
 
-	auto print_val = [&os, compare_times](float cs50, float yours) {
+	auto print_val = [&os](float cs50, float yours) {
 		auto [staff_bold, your_bold] = compare_times(cs50, yours);
-		os << fmt::format("{:.3f}", fmt::styled(cs50, staff_bold | cs50_color))
-			<< '\t';
-
-		os << fmt::format("{:.3f}", fmt::styled(yours, your_bold | your_color))
-			<< '\t';
+		os << fmt::format("{:.3f} ", fmt::styled(cs50, staff_bold | cs50_color));
+		os << fmt::format("{:.3f}   ",
+		                  fmt::styled(yours, your_bold | your_color));
 	};
 
 	print_val(rec.cs50.load, rec.yours.load);
