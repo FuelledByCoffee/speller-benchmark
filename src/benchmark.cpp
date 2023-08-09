@@ -79,14 +79,14 @@ auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
 
 	// print status
 	if (!rec.yours.success) {
-		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::red), "ERROR\t");
+		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::red), "ERROR\t\t");
 	} else if (rec.cs50.dictionary != 0 // a stand in for include staff
 	           && rec.cs50.misspelled != rec.yours.misspelled) {
 		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::yellow),
 		                  "MISMATCH\t");
 	} else {
 		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::lawn_green),
-		                  "OK\t");
+		                  "OK\t\t");
 	}
 
 	auto print_val = [&os, compare_times](float cs50, float yours) {

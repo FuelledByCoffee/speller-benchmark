@@ -9,8 +9,6 @@ void print_results_header() {
 	// clear screen
 	fmt::print(C_CLEAR);
 
-	using namespace fmt::literals;
-
 	// clang-format off
 	// print header
 	fmt::print(cs50_color, 			  "\tCyan   - CS50's implementation\n");
@@ -19,7 +17,7 @@ void print_results_header() {
 	// clang-format on
 
 	fmt::print("\n");
-	fmt::print("{: >16} ", "Filename");
+	fmt::print("{: >16}  ", "Filename");
 	fmt::print("Status\t");
 	fmt::print("Load\t\t");
 	fmt::print("Check\t\t");
