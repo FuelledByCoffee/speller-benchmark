@@ -23,7 +23,7 @@
 #include <results.hpp>
 #include <version.hpp>
 
-#include <assert.h>
+#include <cassert>
 #include <filesystem>
 #include <iterator>
 #include <numeric>
@@ -41,11 +41,9 @@
 
 namespace fs = std::filesystem;
 
-static auto file_count(fs::path const &dir) noexcept ->
+[[nodiscard("Only point of this is using the return value")]] static auto
+file_count(fs::path const &dir) noexcept ->
 		typename std::iterator_traits<fs::directory_iterator>::difference_type;
-
-
-static auto error_m(std::string_view message, int code) -> void;
 
 #ifdef COMPARE_STAFF
 static bool includeStaff = true;
@@ -57,27 +55,31 @@ auto main(int argc, char *argv[]) -> int {
 	std::string_view cs50_speller   = "./speller50";
 	bool             multithreading = true;
 	int              arg            = 0;
-	while ((arg = getopt(argc, argv, "1t:")) != -1) {
+	while ((arg = getopt(argc, argv, "1sy")) != -1) {
 		if (arg == '1')
 			multithreading = false;
-		else if (arg == 't')
+		else if (arg == 's')
 			includeStaff = true;
+		else if (arg == 'y')
+			includeStaff = false;
+		else if (arg == '?')
+			throw fmt::system_error(1, "Invalid flag\n");
 	}
 
 	// make sure speller program exists
 	if (access("speller", X_OK) == -1)
-		error_m("speller binary does not exist, please compile it and place it "
-		        "in the current directory\n",
-		        1);
+		throw fmt::system_error(
+				1, "speller binary does not exist, please compile it and place it "
+					"in the current directory\n");
 
 	if (includeStaff && access(cs50_speller.data(), X_OK) == -1)
-		error_m("Staff speller cannot be opened\n", 1);
+		throw fmt::system_error(1, "Staff speller cannot be opened\n");
 
 	print_results_header();
 
 	fs::path   text_files(CS50_TEXTS);
 	auto const count = file_count(text_files);
-	if (count == 0) exit(2);
+	if (count == 0) throw fmt::system_error(2, "Directory not found");
 
 	std::vector<benchmark>   records;
 	std::vector<std::thread> threads;
@@ -93,6 +95,7 @@ auto main(int argc, char *argv[]) -> int {
 		if (!multithreading) {
 			b.run();
 			fmt::print("{}\n", b);
+			std::fflush(stdout);
 		} else {
 			threads.emplace_back(&benchmark::run, &b);
 		}
@@ -103,7 +106,7 @@ auto main(int argc, char *argv[]) -> int {
 			t.join();
 		}
 
-		std::sort(std::begin(records), std::end(records));
+		std::ranges::sort(records);
 		fmt::print("{}\n", fmt::join(records, "\n"));
 	}
 
@@ -117,12 +120,6 @@ auto main(int argc, char *argv[]) -> int {
 	fmt::print("\n{}\n", total);
 	fmt::print("{}\n", average);
 } // main
-
-/// @brief displays the error and exists with code
-static void error_m(std::string_view message, int code) {
-	fmt::print(stderr, "Error: {}", message);
-	exit(code);
-}
 
 static auto file_count(fs::path const &dir) noexcept ->
 		typename std::iterator_traits<fs::directory_iterator>::difference_type {

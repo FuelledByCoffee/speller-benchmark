@@ -2,20 +2,18 @@
 #include <fmt/color.h>
 #include <fmt/core.h>
 #include <fmt/format.h>
-#include <fmt/printf.h>
 #include <fmt/std.h>
 
 #include <benchmark.hpp>
 #include <colors.hpp>
 
+#include <cstdio>
 #include <iterator>
-#include <memory>
 #include <limits>
+#include <memory>
 #include <ostream>
 #include <string_view>
 #include <thread>
-
-#include <cstdio>
 
 void record::run(std::string_view speller, std::filesystem::path const &path) {
 
@@ -57,20 +55,20 @@ void record::run(std::string_view speller, std::filesystem::path const &path) {
 
 auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
 
-	/**
-	 * @returns string constant bold if num1 is less
-	 */
-	auto compare_times = [](float num1, float num2) {
-		const auto epsilon = std::numeric_limits<float>::epsilon();
-
+	/// @brief bold or not for smaller value
+	auto compare_times =
+			[epsilon = std::numeric_limits<float>::epsilon()](
+					float num1,
+					float num2) -> std::pair<fmt::text_style, fmt::text_style> {
 		// no staff solution or just small diff
 		if (fminf(num1, num2) < epsilon || fabsf(num1 - num2) <= epsilon)
-			return "";
+			return {fmt::text_style{}, fmt::text_style{}};
 
-		if (num1 < num2) return C_BOLD;
+		if (num1 < num2)
+			return {fmt::text_style{fmt::emphasis::bold}, fmt::text_style{}};
 
-		// num2 greater
-		return "";
+		// num2 wins, is smaller
+		return {fmt::text_style{}, fmt::text_style{fmt::emphasis::bold}};
 	};
 
 	// using namespace fmt::literals;
@@ -78,60 +76,33 @@ auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
 	fmt::format_to_n(std::ostream_iterator<decltype(rec.txt)::value_type>(os),
 	                 16, "{: >16}", rec.txt.stem().native());
 	os << ": ";
-	std::fflush(stdout);
 
 	// print status
-	if (rec.yours.success)
+	if (!rec.yours.success) {
+		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::red), "ERROR\t\t");
+	} else if (rec.cs50.dictionary != 0 // a stand in for include staff
+	           && rec.cs50.misspelled != rec.yours.misspelled) {
+		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::yellow),
+		                  "MISMATCH\t");
+	} else {
 		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::lawn_green),
-		                  "OK\t");
-	else
-		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::red), "ERROR\t");
-	os << fmt::format(C_RESET);
+		                  "OK\t\t");
+	}
 
-	// load
-	os << compare_times(rec.cs50.load, rec.yours.load); // bold?
-	os << C_CS50 << std::fixed << std::setprecision(3) << rec.cs50.load
-		<< C_RESET << '\t';
+	auto print_val = [&os, compare_times](float cs50, float yours) {
+		auto [staff_bold, your_bold] = compare_times(cs50, yours);
+		os << fmt::format("{:.3f}", fmt::styled(cs50, staff_bold | cs50_color))
+			<< '\t';
 
-	os << compare_times(rec.yours.load, rec.cs50.load); // bold?
-	os << C_YOURS << std::fixed << std::setprecision(3) << rec.yours.load
-		<< C_RESET << '\t';
+		os << fmt::format("{:.3f}", fmt::styled(yours, your_bold | your_color))
+			<< '\t';
+	};
 
-	// check
-	os << compare_times(rec.cs50.check, rec.yours.check); // bold?
-	os << C_CS50 << std::fixed << std::setprecision(3) << rec.cs50.check
-		<< C_RESET << '\t';
-
-	os << compare_times(rec.yours.check, rec.cs50.check); // bold?
-	os << C_YOURS << std::fixed << std::setprecision(3) << rec.yours.check
-		<< C_RESET << '\t';
-
-	// size
-	os << compare_times(rec.cs50.size, rec.yours.load); // bold?
-	os << C_CS50 << std::fixed << std::setprecision(3) << rec.cs50.size
-		<< C_RESET << '\t';
-
-	os << compare_times(rec.yours.size, rec.cs50.size); // bold?
-	os << C_YOURS << std::fixed << std::setprecision(3) << rec.yours.size
-		<< C_RESET << '\t';
-
-	// unload
-	os << compare_times(rec.cs50.unload, rec.yours.unload); // bold?
-	os << C_CS50 << std::fixed << std::setprecision(3) << rec.cs50.unload
-		<< C_RESET << '\t';
-
-	os << compare_times(rec.yours.unload, rec.cs50.unload); // bold?
-	os << C_YOURS << std::fixed << std::setprecision(3) << rec.yours.unload
-		<< C_RESET << '\t';
-
-	// total
-	os << compare_times(rec.cs50.total, rec.yours.total); // bold?
-	os << C_CS50 << std::fixed << std::setprecision(3) << rec.cs50.total
-		<< C_RESET << '\t';
-
-	os << compare_times(rec.yours.total, rec.cs50.total); // bold?
-	os << C_YOURS << std::fixed << std::setprecision(3) << rec.yours.total
-		<< C_RESET << '\t';
+	print_val(rec.cs50.load, rec.yours.load);
+	print_val(rec.cs50.check, rec.yours.check);
+	print_val(rec.cs50.size, rec.yours.size);
+	print_val(rec.cs50.unload, rec.yours.unload);
+	print_val(rec.cs50.total, rec.yours.total);
 
 	return os;
 }
