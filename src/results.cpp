@@ -1,7 +1,6 @@
 #include "results.hpp"
 
 #include <colors.hpp>
-#include <fmt/core.h>
 #include <fmt/format.h>
 
 void print_results_header() {

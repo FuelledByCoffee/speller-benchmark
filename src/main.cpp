@@ -30,8 +30,6 @@
 #include <string_view>
 #include <vector>
 
-#include <fmt/color.h>
-#include <fmt/ranges.h>
 #include <fmt/std.h>
 
 #include <getopt.h>
@@ -117,8 +115,7 @@ auto main(int argc, char *argv[]) -> int {
 	benchmark average = total / count;
 	average.txt       = fs::path{"Average"};
 
-	fmt::print("\n{}\n", total);
-	fmt::print("{}\n", average);
+	fmt::print("\n{}\n{}\n", total, average);
 } // main
 
 static auto file_count(fs::path const &dir) noexcept ->
