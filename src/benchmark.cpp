@@ -79,23 +79,22 @@ auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
 
 	// print status
 	if (!rec.yours.success) {
-		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::red), "ERROR\t\t");
+		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::red), "{: <10}",
+		                  "ERROR");
 	} else if (rec.cs50.dictionary != 0 // a stand in for include staff
 	           && rec.cs50.misspelled != rec.yours.misspelled) {
-		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::yellow),
-		                  "MISMATCH\t");
+		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::yellow), "{: <10}",
+		                  "MISMATCH");
 	} else {
 		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::lawn_green),
-		                  "OK\t\t");
+		                  "{: <10}", "OK");
 	}
 
 	auto print_val = [&os, compare_times](float cs50, float yours) {
 		auto [staff_bold, your_bold] = compare_times(cs50, yours);
-		os << fmt::format("{:.3f}", fmt::styled(cs50, staff_bold | cs50_color))
-			<< '\t';
-
-		os << fmt::format("{:.3f}", fmt::styled(yours, your_bold | your_color))
-			<< '\t';
+		os << fmt::format("{:.3f} ", fmt::styled(cs50, staff_bold | cs50_color));
+		os << fmt::format("{:.3f}   ",
+		                  fmt::styled(yours, your_bold | your_color));
 	};
 
 	print_val(rec.cs50.load, rec.yours.load);

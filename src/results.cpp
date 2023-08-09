@@ -18,11 +18,11 @@ void print_results_header() {
 
 	fmt::print("\n");
 	fmt::print("{: >16}  ", "Filename");
-	fmt::print("Status\t");
-	fmt::print("Load\t\t");
-	fmt::print("Check\t\t");
-	fmt::print("Size\t\t");
-	fmt::print("Unload\t\t");
-	fmt::print("Total\t\t");
+	fmt::print("{: <10}", "Status");
+	fmt::print("{: <14}", "Load");
+	fmt::print("{: <14}", "Check");
+	fmt::print("{: <14}", "Size");
+	fmt::print("{: <14}", "Unload");
+	fmt::print("{: <14}", "Total");
 	fmt::print("\n");
 }
