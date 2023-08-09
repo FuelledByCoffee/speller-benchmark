@@ -104,7 +104,7 @@ auto main(int argc, char *argv[]) -> int {
 			t.join();
 		}
 
-		std::ranges::sort(records);
+		std::sort(std::begin(records), std::end(records));
 		fmt::print("{}\n", fmt::join(records, "\n"));
 	}
 
