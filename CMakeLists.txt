@@ -8,9 +8,10 @@ project(speller-benchmark VERSION 2.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
-# set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-# set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-# include(CPack)
+set(CPACK_PROJECT_NAME ${PROJECT_NAME})
+set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+include(CPack)
+
 include(BuildType)
 include(Warnings)
 include(Sanitizers)
