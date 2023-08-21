@@ -31,6 +31,8 @@
 	return {fmt::text_style{}, fmt::text_style{fmt::emphasis::bold}};
 }
 
+
+//-----------------------------------------------------------------------------
 void record::run(std::string_view speller, std::filesystem::path const &path) {
 
 	std::string const command = fmt::format("./{} {}", speller, path.c_str());
@@ -69,6 +71,7 @@ void record::run(std::string_view speller, std::filesystem::path const &path) {
 	}
 }
 
+//-----------------------------------------------------------------------------
 auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
 
 	fmt::format_to_n(std::ostream_iterator<decltype(rec.txt)::value_type>(os),
