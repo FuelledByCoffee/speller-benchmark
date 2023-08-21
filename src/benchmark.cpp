@@ -14,11 +14,12 @@
 #include <string_view>
 #include <thread>
 
-static auto const epsilon = std::numeric_limits<float>::epsilon();
-
 /// @brief bold or not for smaller value
 [[nodiscard]] static auto compare_times(float num1, float num2)
 		-> std::pair<fmt::text_style, fmt::text_style> {
+
+	constexpr static auto epsilon = std::numeric_limits<float>::epsilon();
+
 	// no staff solution or just small diff
 	if (fminf(num1, num2) < epsilon || fabsf(num1 - num2) <= epsilon)
 		return {fmt::text_style{}, fmt::text_style{}};
