@@ -4,7 +4,7 @@
 #include <fmt/std.h>
 
 #include <benchmark.hpp>
-#include <colors.hpp>
+#include <results.hpp>
 
 #include <cstdio>
 #include <iterator>

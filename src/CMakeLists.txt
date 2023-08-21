@@ -1,6 +1,6 @@
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/version.hpp.in ${CMAKE_BINARY_DIR}/version.hpp @ONLY)
 
-add_executable(bench main.cpp benchmark.cpp colors.cpp results.cpp)
+add_executable(bench main.cpp benchmark.cpp results.cpp)
 target_include_directories(bench
    PRIVATE ${PROJECT_BINARY_DIR}
    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

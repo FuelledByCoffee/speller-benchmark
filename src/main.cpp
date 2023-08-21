@@ -19,7 +19,6 @@
  */
 
 #include <benchmark.hpp>
-#include <colors.hpp>
 #include <results.hpp>
 #include <version.hpp>
 
@@ -43,15 +42,10 @@ namespace fs = std::filesystem;
 file_count(fs::path const &dir) noexcept ->
 		typename std::iterator_traits<fs::directory_iterator>::difference_type;
 
-#ifdef COMPARE_STAFF
-static bool includeStaff = true;
-#else
-static bool includeStaff = false;
-#endif
-
 auto main(int argc, char *argv[]) -> int {
 	std::string_view cs50_speller   = "./speller50";
 	bool             multithreading = true;
+	bool             includeStaff   = true;
 	int              arg            = 0;
 	while ((arg = getopt(argc, argv, "1sy")) != -1) {
 		if (arg == '1')
@@ -70,8 +64,10 @@ auto main(int argc, char *argv[]) -> int {
 				1, "speller binary does not exist, please compile it and place it "
 					"in the current directory\n");
 
-	if (includeStaff && access(cs50_speller.data(), X_OK) == -1)
-		throw fmt::system_error(1, "Staff speller cannot be opened\n");
+	if (includeStaff && access(cs50_speller.data(), X_OK) == -1) {
+		fmt::print(stderr, "Staff speller cannot be opened\n");
+		includeStaff = false;
+	}
 
 	print_results_header();
 

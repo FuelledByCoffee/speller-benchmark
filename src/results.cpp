@@ -1,6 +1,4 @@
 #include "results.hpp"
-
-#include <colors.hpp>
 #include <fmt/format.h>
 
 namespace fmt {
