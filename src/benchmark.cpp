@@ -37,10 +37,9 @@ void record::run(std::string_view speller, std::filesystem::path const &path) {
 
 	std::string const command = fmt::format("./{} {}", speller, path.c_str());
 
+	// execute and parse user results
 	std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command.c_str(), "r"),
 	                                              pclose);
-
-	// execute and parse user results
 	if (!pipe) {
 		fmt::print(stderr, "Opening text file {} in thread {} failed\n",
 		           path.filename(), std::this_thread::get_id());
