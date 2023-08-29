@@ -31,10 +31,7 @@ struct record {
 		return *this;
 	}
 
-	auto operator+(record other) const -> record {
-		other += *this;
-		return other;
-	}
+	auto operator+(record other) const -> record { return other += *this; }
 
 	template <typename Int>
 	auto operator/=(Int divisor) -> record & {
@@ -63,32 +60,34 @@ class benchmark {
 	friend auto operator<(benchmark const &left, benchmark const &right) {
 		return left.yours.total < right.yours.total;
 	}
+
 	friend auto operator>(benchmark const &left, benchmark const &right) {
 		return right < left;
 	}
+
 	friend auto operator<=(benchmark const &left, benchmark const &right) {
 		return !(right < left);
 	}
+
 	friend auto operator>=(benchmark const &left, benchmark const &right) {
 		return !(right > left);
 	}
+
 	friend auto operator==(benchmark const &left, benchmark const &right) {
 		return left.yours.total == right.yours.total;
 	}
+
 	friend auto operator!=(benchmark const &left, benchmark const &right) {
 		return !(left == right);
 	}
-	
+
 	auto operator+=(benchmark const &other) -> benchmark & {
 		yours += other.yours;
 		cs50  += other.cs50;
 		return *this;
 	}
 
-	auto operator+(benchmark rhs) const -> benchmark {
-		rhs += *this;
-		return rhs;
-	}
+	auto operator+(benchmark rhs) const -> benchmark { return rhs += *this; }
 
 	template <typename Int = int>
 	auto operator/=(Int divisor) -> benchmark & {

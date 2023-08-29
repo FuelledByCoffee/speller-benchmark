@@ -31,7 +31,6 @@
 	return {fmt::text_style{}, fmt::text_style{fmt::emphasis::bold}};
 }
 
-
 //-----------------------------------------------------------------------------
 void record::run(std::string_view speller, std::filesystem::path const &path) {
 
