@@ -41,7 +41,7 @@ void record::run(std::string_view speller, std::filesystem::path const &path) {
 	                                              pclose);
 	if (!pipe) {
 		fmt::print(stderr, "Opening text file {} in thread {} failed\n",
-		           path.filename(), std::this_thread::get_id());
+		           path.filename(), fmt::streamed(std::this_thread::get_id()));
 		success = false;
 		return;
 	}
