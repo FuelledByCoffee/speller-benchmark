@@ -5,7 +5,7 @@ BasedOnStyle:  LLVM
 ---
 Language:      Cpp
 BasedOnStyle:  LLVM
-AccessModifierOffset: -2
+AccessModifierOffset: -4
 AlignAfterOpenBracket: Align
 AlignConsecutiveMacros: Consecutive
 AlignArrayOfStructures: Right
@@ -70,7 +70,7 @@ ColumnLimit:     80
 CommentPragmas:  '^ IWYU pragma:'
 CompactNamespaces: true
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
-ConstructorInitializerIndentWidth: 3
+ConstructorInitializerIndentWidth: 4
 ContinuationIndentWidth: 6
 Cpp11BracedListStyle: true
 DeriveLineEnding: true
@@ -107,7 +107,7 @@ IndentGotoLabels: true
 IndentPPDirectives: BeforeHash
 IndentExternBlock: AfterExternBlock
 IndentRequires:  false
-IndentWidth:     3
+IndentWidth:     4
 IndentWrappedFunctionNames: false
 InsertTrailingCommas: None
 JavaScriptQuotes: Leave
@@ -163,7 +163,7 @@ Standard:        Latest
 StatementMacros:
   - Q_UNUSED
   - QT_REQUIRE_VERSION
-TabWidth:        3
+TabWidth:        4
 UseCRLF:         false
 UseTab:          AlignWithSpaces
 WhitespaceSensitiveMacros:

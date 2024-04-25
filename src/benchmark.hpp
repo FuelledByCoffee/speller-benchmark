@@ -33,7 +33,7 @@ struct record {
 
 	auto operator+(record other) const -> record { return other += *this; }
 
-	template <typename Int>
+	template <typename Int = int>
 	auto operator/=(Int divisor) -> record & {
 		load   /= divisor;
 		check  /= divisor;
@@ -46,7 +46,7 @@ struct record {
 };
 
 class benchmark {
- public:
+public:
 	benchmark() = default;
 
 	benchmark(std::filesystem::path const &txtfile, bool bench_staff) //
@@ -103,12 +103,12 @@ class benchmark {
 		return b;
 	}
 
-	friend auto operator<<(std::ostream &os, benchmark const &results)
-			-> std::ostream &;
+	friend auto operator<<(std::ostream    &os,
+	                       benchmark const &results) -> std::ostream &;
 
 	std::filesystem::path txt;
 
- private:
+private:
 	record yours{};
 	record cs50{};
 
