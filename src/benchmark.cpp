@@ -21,14 +21,14 @@
 	constexpr static auto epsilon = std::numeric_limits<float>::epsilon();
 
 	// no staff solution or just small diff
-	if (fminf(num1, num2) < epsilon || fabsf(num1 - num2) <= epsilon)
-		return {fmt::text_style{}, fmt::text_style{}};
+	if (fminf(num1, num2) <= epsilon || fabsf(num1 - num2) <= epsilon)
+		return {{}, {}};
 
 	if (num1 < num2)
-		return {fmt::text_style{fmt::emphasis::bold}, fmt::text_style{}};
+		return {{fmt::emphasis::bold}, {}};
 
 	// num2 wins, is smaller
-	return {fmt::text_style{}, fmt::text_style{fmt::emphasis::bold}};
+	return {{}, {fmt::emphasis::bold}};
 }
 
 //-----------------------------------------------------------------------------
