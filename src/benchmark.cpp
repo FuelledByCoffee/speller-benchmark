@@ -91,7 +91,8 @@ auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
 
 	auto print_val = [&os](float cs50, float yours) {
 		auto [staff_bold, your_bold] = compare_times(cs50, yours);
-		os << fmt::format("{:.3f} ", fmt::styled(cs50, staff_bold | cs50_color));
+		os << fmt::format("{:.3f} ",
+		                  fmt::styled(cs50, staff_bold | cs50_color));
 		os << fmt::format("{:.3f}   ",
 		                  fmt::styled(yours, your_bold | your_color));
 	};
