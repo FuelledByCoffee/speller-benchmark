@@ -99,8 +99,7 @@ public:
 
 	template <typename Int = int>
 	friend auto operator/(benchmark b, Int divisor) -> benchmark {
-		b /= divisor;
-		return b;
+		return b /= divisor;
 	}
 
 	friend auto operator<<(std::ostream    &os,
