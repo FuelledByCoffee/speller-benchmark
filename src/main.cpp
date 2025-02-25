@@ -59,10 +59,13 @@ auto main(int argc, char *argv[]) -> int {
 	}
 
 	// make sure speller program exists
-	if (access("speller", X_OK) == -1)
-		throw fmt::system_error(
-				1, "speller binary does not exist, please compile it and place it "
-					"in the current directory\n");
+	if (access("speller", X_OK) == -1) {
+		fmt::print(stderr,
+		           "Could not locate speller binary\n" //
+		           "Please launch the benchmark utility from the directory "
+		           "where your speller binary is located\n");
+		return 1;
+	}
 
 	if (includeStaff && access(cs50_speller.data(), X_OK) == -1) {
 		fmt::print(stderr, "Staff speller cannot be opened\n");
