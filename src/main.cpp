@@ -19,6 +19,7 @@
  */
 
 #include <benchmark.hpp>
+#include <cstddef>
 #include <fmt/core.h>
 #include <results.hpp>
 #include <version.hpp>
@@ -76,7 +77,7 @@ auto main(int argc, char *argv[]) -> int {
 	print_results_header();
 
 	fs::path   text_files(CS50_TEXTS);
-	auto const count = file_count(text_files);
+	auto count = static_cast<std::size_t>(file_count(text_files));
 	if (count == 0) throw fmt::system_error(2, "Directory not found");
 
 	std::vector<benchmark>   records;
