@@ -1,4 +1,8 @@
+#include <boost/process.hpp>
 
+#include <boost/process/v1/detail/child_decl.hpp>
+#include <boost/process/v1/io.hpp>
+#include <boost/process/v1/pipe.hpp>
 #include <fmt/color.h>
 #include <fmt/format.h>
 #include <fmt/std.h>
@@ -9,10 +13,9 @@
 #include <cstdio>
 #include <iterator>
 #include <limits>
-#include <memory>
 #include <ostream>
+#include <string>
 #include <string_view>
-#include <thread>
 
 /// @brief bold or not for smaller value
 [[nodiscard]] static auto compare_times(float num1, float num2)
@@ -34,28 +37,21 @@
 //-----------------------------------------------------------------------------
 void record::run(std::string_view speller, std::filesystem::path const &path) {
 
-	std::string const command = fmt::format("./{} {}", speller, path.c_str());
+	namespace bp = boost::process;
 
-	// execute and parse user results
-	std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command.c_str(), "r"),
-	                                              pclose);
-	if (!pipe) {
-		fmt::print(stderr, "Opening text file {} in thread {} failed\n",
-		           path.filename(), fmt::streamed(std::this_thread::get_id()));
-		success = false;
-		return;
-	}
+	bp::ipstream pipe;
+	bp::child    c(speller.data(), path.c_str(), bp::std_out > pipe);
+	std::string  line;
 
-	std::array<char, 200> buffer;
+	// consume until stats
+	while (std::getline(pipe, line))
+		if (strstr(line.data(), "WORDS MISSPELLED") != NULL) break;
 
-	// consume till stats
-	while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr)
-		if (strstr(buffer.data(), "WORDS MISSPELLED") != NULL) break;
+	sscanf(line.data(), "WORDS MISSPELLED: %d\n", &misspelled);
 
-	sscanf(buffer.data(), "WORDS MISSPELLED: %d\n", &misspelled);
-
-	// parse output
-	if (fscanf(pipe.get(),
+	line.reserve(1000);
+	pipe.read(line.data(), 1000);
+	if (sscanf(line.data(),
 	           "WORDS IN DICTIONARY:  %d\n"
 	           "WORDS IN TEXT:        %d\n"
 	           "TIME IN load:         %f\n"
@@ -67,6 +63,7 @@ void record::run(std::string_view speller, std::filesystem::path const &path) {
 	    != 7) {
 		success = false;
 	}
+	c.wait();
 }
 
 //-----------------------------------------------------------------------------
