@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.30)
-
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-
 include(vcpkg) # Must set toolchain file before calling project()
-
 project(speller-benchmark VERSION 2.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
