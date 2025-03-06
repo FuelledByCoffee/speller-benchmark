@@ -22,21 +22,32 @@ enable_sanitizers()
 add_subdirectory(src)
 
 get_filename_component(PARENT_DIR ../ ABSOLUTE)
-set(SPELLER_LOCATION "${PARENT_DIR}" CACHE STRING "The location of your cs50 project directory")
+set(SPELLER_LOCATION
+    "${PARENT_DIR}"
+    CACHE STRING
+    "The location of your cs50 project directory"
+)
 
-install(TARGETS bench
-	CONFIGURATIONS Release)
+install(TARGETS bench CONFIGURATIONS Release)
 
 include(CTest)
-add_test(NAME single_thread
-	COMMAND bench -1y
-	WORKING_DIRECTORY ${SPELLER_LOCATION})
-add_test(NAME multi_thread
-	COMMAND bench -y
-	WORKING_DIRECTORY ${SPELLER_LOCATION})
-add_test(NAME single_thread_with_staff
-	COMMAND bench -1s
-	WORKING_DIRECTORY ${SPELLER_LOCATION})
-add_test(NAME multi_thread_with_staff
-	COMMAND bench -s
-	WORKING_DIRECTORY ${SPELLER_LOCATION})
+add_test(
+    NAME single_thread
+    COMMAND bench -1y
+    WORKING_DIRECTORY ${SPELLER_LOCATION}
+)
+add_test(
+    NAME multi_thread
+    COMMAND bench -y
+    WORKING_DIRECTORY ${SPELLER_LOCATION}
+)
+add_test(
+    NAME single_thread_with_staff
+    COMMAND bench -1s
+    WORKING_DIRECTORY ${SPELLER_LOCATION}
+)
+add_test(
+    NAME multi_thread_with_staff
+    COMMAND bench -s
+    WORKING_DIRECTORY ${SPELLER_LOCATION}
+)
