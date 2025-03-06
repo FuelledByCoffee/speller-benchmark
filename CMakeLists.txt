@@ -22,7 +22,7 @@ get_filename_component(PARENT_DIR ../ ABSOLUTE)
 set(SPELLER_LOCATION
     "${PARENT_DIR}"
     CACHE STRING
-    "The location of your cs50 project directory"
+    "The location of your cs50 speller project directory"
 )
 
 install(TARGETS bench CONFIGURATIONS Release)
