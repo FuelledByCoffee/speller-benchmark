@@ -1,0 +1,19 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "lldb",
+			"request": "launch",
+			"name": "CTest",
+			"program": "${cmake.testProgram}",
+			"args": [
+				"${cmake.testArgs}"
+			],
+			"env": {
+				"ASAN_OPTIONS": "detect_leaks=0"
+			},
+			"cwd": "${workspaceFolder}/../speller",
+			"terminal": "console"
+		}
+	]
+}
