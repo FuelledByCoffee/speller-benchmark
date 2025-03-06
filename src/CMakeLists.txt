@@ -28,7 +28,7 @@ include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag("-march=native" COMPILER_SUPPORTS_MARCH_NATIVE)
 
 if(COMPILER_SUPPORTS_MARCH_NATIVE)
-    option(OPTIMIZE_FOR_NATIVE "Build with -march=native" ON)
+    option(OPTIMIZE_FOR_NATIVE "Build with -march=native" OFF)
 
     if(OPTIMIZE_FOR_NATIVE)
         target_compile_options(bench PRIVATE -march=native)
