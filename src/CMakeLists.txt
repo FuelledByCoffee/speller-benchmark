@@ -10,9 +10,9 @@ target_include_directories(
     PRIVATE ${PROJECT_BINARY_DIR}
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
 )
-
+find_package(Boost REQUIRED COMPONENTS process)
 find_package(fmt CONFIG REQUIRED)
-target_link_libraries(bench PRIVATE fmt::fmt)
+target_link_libraries(bench PRIVATE Boost::process fmt::fmt)
 
 set_target_properties(
     bench
