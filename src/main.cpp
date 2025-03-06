@@ -115,7 +115,7 @@ auto main(int argc, char *argv[]) -> int {
 } // main
 
 static auto file_count(fs::path const &dir) noexcept ->
-		typename std::iterator_traits<fs::directory_iterator>::difference_type {
+	  typename std::iterator_traits<fs::directory_iterator>::difference_type {
 	try {
 		return std::distance(fs::directory_iterator{dir},
 		                     fs::directory_iterator{});
