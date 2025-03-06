@@ -19,6 +19,7 @@
  */
 
 #include <benchmark.hpp>
+#include <fmt/core.h>
 #include <results.hpp>
 #include <version.hpp>
 
@@ -89,22 +90,18 @@ auto main(int argc, char *argv[]) -> int {
 	}
 
 	for (auto &b : records) {
-		if (!multithreading) {
-			b.run();
-			fmt::print("{}\n", b);
-			std::fflush(stdout);
-		} else {
-			threads.emplace_back(&benchmark::run, &b);
-		}
+		auto printer = [](auto const &bench) { fmt::print("{}\n", bench); };
+		if (!multithreading)
+			b.run(printer);
+		else
+			threads.emplace_back(&benchmark::run<decltype(printer)>, &b,
+			                     printer);
 	}
 
 	if (multithreading) {
 		for (auto &t : threads) {
 			t.join();
 		}
-
-		std::sort(std::begin(records), std::end(records));
-		fmt::print("{}\n", fmt::join(records, "\n"));
 	}
 
 

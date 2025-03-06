@@ -52,9 +52,11 @@ public:
 	benchmark(std::filesystem::path const &txtfile, bool bench_staff) //
 		: txt(txtfile), m_staff(bench_staff) {}
 
-	void run() {
+	template <typename F>
+	void run(F&& callback) {
 		if (m_staff) cs50.run("speller50", txt);
 		yours.run("speller", txt);
+		callback(*this);
 	}
 
 	friend auto operator<(benchmark const &left, benchmark const &right) {
