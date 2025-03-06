@@ -26,11 +26,19 @@ target_compile_features(
 
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag("-march=native" COMPILER_SUPPORTS_MARCH_NATIVE)
+check_cxx_compiler_flag("-flto" COMPILER_SUPPORTS_LTO)
 
 if(COMPILER_SUPPORTS_MARCH_NATIVE)
-    option(OPTIMIZE_FOR_NATIVE "Build with -march=native" OFF)
+    option(MARCH_NATIVE "Build with -march=native" OFF)
+    if(MARCH_NATIVE)
+        target_compile_options(bench PRIVATE "-march=native")
+    endif()
+endif()
 
-    if(OPTIMIZE_FOR_NATIVE)
-        target_compile_options(bench PRIVATE -march=native)
+if(COMPILER_SUPPORTS_LTO)
+    option(LINK_TIME_OPTIMIZATION "Build with -flto" OFF)
+    if(LINK_TIME_OPTIMIZATION)
+        target_compile_options(bench PRIVATE "$<$<CONFIG:RELEASE>:-flto>")
+        target_link_options(bench PRIVATE "$<$<CONFIG:RELEASE>:-flto>")
     endif()
 endif()
