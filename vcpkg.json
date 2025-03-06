@@ -1,9 +1,11 @@
 {
-   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
-   "name": "prog",
-   "version": "0.1",
-   "builtin-baseline": "501db0f17ef6df184fcdbfbe0f87cde2313b6ab1",
-   "dependencies": [
-      "fmt"
-   ]
+	"$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+	"name": "prog",
+	"version": "0.1",
+	"builtin-baseline": "23b33f5a010e3d67132fa3c34ab6cd0009bb9296",
+	"dependencies": [
+		"fmt",
+		"range-v3",
+		"catch2"
+	]
 }
