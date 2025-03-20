@@ -105,9 +105,9 @@ auto main(int argc, char *argv[]) -> int {
 
 	benchmark total = std::reduce(std::cbegin(records), std::cend(records));
 
-	total.txt         = fs::path{"Total"};
+	total.txt         = "Total";
 	benchmark average = total / count;
-	average.txt       = fs::path{"Average"};
+	average.txt       = "Average";
 
 	fmt::print("\n{}\n{}\n", total, average);
 } // main
