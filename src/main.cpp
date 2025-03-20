@@ -99,11 +99,8 @@ auto main(int argc, char *argv[]) -> int {
 			                     printer);
 	}
 
-	if (multithreading) {
-		for (auto &t : threads) {
-			t.join();
-		}
-	}
+	if (multithreading)
+		for (auto &t : threads) t.join();
 
 
 	benchmark total = std::reduce(std::cbegin(records), std::cend(records));
