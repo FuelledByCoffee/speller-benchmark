@@ -21,7 +21,7 @@ struct record {
 
 	bool success = true;
 
-	auto operator+=(record const &other) -> record & {
+	constexpr auto operator+=(record const &other) -> record & {
 		load   += other.load;
 		check  += other.check;
 		size   += other.size;
@@ -31,10 +31,12 @@ struct record {
 		return *this;
 	}
 
-	auto operator+(record other) const -> record { return other += *this; }
+	constexpr auto operator+(record other) const -> record {
+		return other += *this;
+	}
 
 	template <typename Int = int>
-	auto operator/=(Int divisor) -> record & {
+	constexpr auto operator/=(Int divisor) -> record & {
 		load   /= divisor;
 		check  /= divisor;
 		size   /= divisor;
