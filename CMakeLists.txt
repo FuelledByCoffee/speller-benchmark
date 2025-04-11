@@ -19,9 +19,9 @@ enable_sanitizers()
 add_subdirectory(src)
 
 get_filename_component(PARENT_DIR ../ ABSOLUTE)
-set(SPELLER_LOCATION
+set(speller_location
     "${PARENT_DIR}"
-    CACHE STRING
+    CACHE PATH
     "The location of your cs50 speller project directory"
 )
 
@@ -31,20 +31,20 @@ include(CTest)
 add_test(
     NAME single_thread
     COMMAND bench -1y
-    WORKING_DIRECTORY ${SPELLER_LOCATION}
+    WORKING_DIRECTORY ${speller_location}
 )
 add_test(
     NAME multi_thread
     COMMAND bench -y
-    WORKING_DIRECTORY ${SPELLER_LOCATION}
+    WORKING_DIRECTORY ${speller_location}
 )
 add_test(
     NAME single_thread_with_staff
     COMMAND bench -1s
-    WORKING_DIRECTORY ${SPELLER_LOCATION}
+    WORKING_DIRECTORY ${speller_location}
 )
 add_test(
     NAME multi_thread_with_staff
     COMMAND bench -s
-    WORKING_DIRECTORY ${SPELLER_LOCATION}
+    WORKING_DIRECTORY ${speller_location}
 )
