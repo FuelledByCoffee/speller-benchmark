@@ -1,8 +1,8 @@
 include(FetchContent)
 FetchContent_Declare(
-   vcpkg
-   GIT_REPOSITORY https://github.com/microsoft/vcpkg
-   GIT_TAG 23b33f5a010e3d67132fa3c34ab6cd0009bb9296
+    vcpkg
+    GIT_REPOSITORY https://github.com/microsoft/vcpkg
+    GIT_TAG 23b33f5a010e3d67132fa3c34ab6cd0009bb9296
 )
 
 FetchContent_MakeAvailable(vcpkg)
