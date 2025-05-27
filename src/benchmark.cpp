@@ -1,11 +1,8 @@
-#include <boost/process.hpp>
-
-#include <boost/process/v1/detail/child_decl.hpp>
-#include <boost/process/v1/io.hpp>
-#include <boost/process/v1/pipe.hpp>
 #include <fmt/color.h>
 #include <fmt/format.h>
 #include <fmt/std.h>
+
+#include <boost/process.hpp>
 
 #include <benchmark.hpp>
 #include <results.hpp>
