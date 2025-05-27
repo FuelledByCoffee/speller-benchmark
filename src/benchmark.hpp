@@ -37,11 +37,12 @@ struct record {
 
 	template <typename Int = int>
 	constexpr auto operator/=(Int divisor) -> record & {
-		load   /= divisor;
-		check  /= divisor;
-		size   /= divisor;
-		unload /= divisor;
-		total  /= divisor;
+		auto div = static_cast<float>(divisor);
+		load   /= div;
+		check  /= div;
+		size   /= div;
+		unload /= div;
+		total  /= div;
 
 		return *this;
 	}

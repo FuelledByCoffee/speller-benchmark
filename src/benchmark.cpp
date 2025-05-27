@@ -16,7 +16,7 @@
 
 /// @brief bold or not for smaller value
 [[nodiscard]] static auto compare_times(float num1, float num2)
-		-> std::pair<fmt::text_style, fmt::text_style> {
+	  -> std::pair<fmt::text_style, fmt::text_style> {
 
 	constexpr static auto epsilon = std::numeric_limits<float>::epsilon();
 
@@ -24,8 +24,7 @@
 	if (fminf(num1, num2) <= epsilon || fabsf(num1 - num2) <= epsilon)
 		return {{}, {}};
 
-	if (num1 < num2)
-		return {{fmt::emphasis::bold}, {}};
+	if (num1 < num2) return {{fmt::emphasis::bold}, {}};
 
 	// num2 wins, is smaller
 	return {{}, {fmt::emphasis::bold}};
@@ -37,8 +36,8 @@ void record::run(std::string_view speller, std::filesystem::path const &path) {
 	namespace bp = boost::process;
 
 	bp::ipstream pipe;
-	bp::child    c(speller.data(), path.c_str(), bp::std_out > pipe);
-	std::string  line;
+	bp::child   c(speller.data(), path.c_str(), bp::std_out > pipe);
+	std::string line;
 
 	// consume until stats
 	while (std::getline(pipe, line))
@@ -76,8 +75,8 @@ auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
 		                  "ERROR");
 	} else if (rec.cs50.dictionary != 0 // a stand in for include staff
 	           && rec.cs50.misspelled != rec.yours.misspelled) {
-		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::yellow), "{: <10}",
-		                  "MISMATCH");
+		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::yellow),
+		                  "{: <10}", "MISMATCH");
 	} else {
 		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::lawn_green),
 		                  "{: <10}", "OK");
