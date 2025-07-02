@@ -87,7 +87,7 @@ auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
 		os << fmt::format("{:.3f} ",
 		                  fmt::styled(cs50, staff_bold | cs50_color));
 		os << fmt::format("{:.3f}   ",
-		                  fmt::styled(yours, your_bold | your_color));
+		                  fmt::styled(yours, your_bold));
 	};
 
 	print_val(rec.cs50.load, rec.yours.load);

@@ -20,9 +20,9 @@ void print_results_header() {
 
 
 	// print header
-	fmt::print_indented(8, "{}\n", fmt::styled("Cyan  - CS50's implementation", cs50_color));
-	fmt::print_indented(8, "{}\n", fmt::styled("White - your implementation", your_color));
-	fmt::print_indented(8, "{}\n", fmt::styled("Bold  - lesser time", fmt::emphasis::bold));
+	fmt::print_indented(8, "{}\n", fmt::styled("Cyan    - CS50's implementation", cs50_color));
+	fmt::print_indented(8, "{}\n",             "Default - your implementation");
+	fmt::print_indented(8, "{}\n", fmt::styled("Bold    - lesser time", fmt::emphasis::bold));
 
 	fmt::print("\n");
 	fmt::print("{: >16}  ", "Filename");
