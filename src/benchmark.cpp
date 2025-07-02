@@ -21,7 +21,7 @@
 	constexpr static auto epsilon = std::numeric_limits<float>::epsilon();
 
 	// no staff solution or just small diff
-	if (fminf(num1, num2) <= epsilon || fabsf(num1 - num2) <= epsilon)
+	if (std::min(num1, num2) <= epsilon || std::abs(num1 - num2) <= epsilon)
 		return {{}, {}};
 
 	if (num1 < num2) return {{fmt::emphasis::bold}, {}};
