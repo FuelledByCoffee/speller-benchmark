@@ -75,7 +75,7 @@ auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
 		                  "ERROR");
 	} else if (rec.cs50.dictionary != 0 // a stand in for include staff
 	           && rec.cs50.misspelled != rec.yours.misspelled) {
-		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::yellow),
+		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::dark_golden_rod),
 		                  "{: <10}", "MISMATCH");
 	} else {
 		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::lawn_green),
