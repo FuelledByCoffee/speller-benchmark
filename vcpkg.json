@@ -2,7 +2,7 @@
 	"$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
 	"name": "speller-benchmark",
 	"version": "2.0.0",
-	"builtin-baseline": "ce613c41372b23b1f51333815feb3edd87ef8a8b",
+	"builtin-baseline": "23b33f5a010e3d67132fa3c34ab6cd0009bb9296",
 	"dependencies": [
 		{
 			"name": "fmt",
