@@ -2,7 +2,7 @@
 #include <fmt/format.h>
 #include <fmt/std.h>
 
-#include <boost/process.hpp>
+#include <boost/process/v1.hpp>
 
 #include <benchmark.hpp>
 #include <results.hpp>
@@ -33,7 +33,7 @@
 //-----------------------------------------------------------------------------
 void record::run(std::string_view speller, std::filesystem::path const &path) {
 
-	namespace bp = boost::process;
+	namespace bp = boost::process::v1;
 
 	bp::ipstream pipe;
 	bp::child   c(speller.data(), path.c_str(), bp::std_out > pipe);

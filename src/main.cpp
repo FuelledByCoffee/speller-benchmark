@@ -75,8 +75,8 @@ auto main(int argc, char *argv[]) -> int {
 
 	print_results_header();
 
-	fs::path   text_files(CS50_TEXTS);
-	auto count = static_cast<std::size_t>(file_count(text_files));
+	fs::path text_files(CS50_TEXTS);
+	auto     count = static_cast<std::size_t>(file_count(text_files));
 	if (count == 0) throw fmt::system_error(2, "Directory not found");
 
 	std::vector<benchmark>   records;
