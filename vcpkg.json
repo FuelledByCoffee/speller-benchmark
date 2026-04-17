@@ -12,7 +12,6 @@
             "name": "boost-process",
             "version>=": "1.86.0"
         },
-        "range-v3",
         "catch2"
     ]
 }
