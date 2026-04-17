@@ -40,39 +40,31 @@ void record::run(std::string_view speller, std::filesystem::path const &path) {
 	bp::child   c(speller.data(), path.c_str(), bp::std_out > pipe);
 	std::string line;
 
-	// consume until stats
-	while (std::getline(pipe, line))
-		if (strstr(line.data(), "WORDS MISSPELLED") != NULL) break;
-
-	// Parse "WORDS MISSPELLED: 5"
-	{
-		std::istringstream iss(line);
-		std::string label;
-		iss >> label >> label >> misspelled;  // skip "WORDS MISSPELLED:"
-	}
-
-	// Read and parse the remaining stats
-	std::string dummy;
-	for (int i = 0; i < 7; ++i) {
-		std::getline(pipe, line);
-		std::istringstream iss(line);
-
-		// Skip label (e.g., "WORDS IN DICTIONARY:")
-		std::string::size_type colon_pos = line.find(':');
-		if (colon_pos == std::string::npos) continue;
-
-		std::istringstream value_stream(line.substr(colon_pos + 1));
-
-		switch (i) {
-			case 0: value_stream >> dictionary; break;
-			case 1: value_stream >> text; break;
-			case 2: value_stream >> load; break;
-			case 3: value_stream >> check; break;
-			case 4: value_stream >> size; break;
-			case 5: value_stream >> unload; break;
-			case 6: value_stream >> total; break;
+	// Find and parse "WORDS MISSPELLED: <number>"
+	while (std::getline(pipe, line)) {
+		if (line.find("WORDS MISSPELLED") != std::string::npos) {
+			std::istringstream iss(line);
+			std::string unused;
+			// iss >> WORDS >> MISSPELLED >> <number>
+			iss >> unused >> unused >> misspelled;
+			break;
 		}
 	}
+
+	// Parse the remaining stats sequentially
+	auto parse_stat = [&pipe, &line](auto& value) {
+		std::getline(pipe, line);
+		std::istringstream iss(line.substr(line.find(':') + 1));
+		iss >> value;
+	};
+
+	parse_stat(dictionary);
+	parse_stat(text);
+	parse_stat(load);
+	parse_stat(check);
+	parse_stat(size);
+	parse_stat(unload);
+	parse_stat(total);
 
 	c.wait();
 }
