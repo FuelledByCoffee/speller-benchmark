@@ -11,9 +11,9 @@
 #include <iterator>
 #include <limits>
 #include <ostream>
+#include <sstream>
 #include <string>
 #include <string_view>
-#include <sstream>
 
 /// @brief bold or not for smaller value
 [[nodiscard]] static auto compare_times(float num1, float num2)
@@ -37,14 +37,14 @@ void record::run(std::string_view speller, std::filesystem::path const &path) {
 	namespace bp = boost::process::v1;
 
 	bp::ipstream pipe;
-	bp::child   c(speller.data(), path.c_str(), bp::std_out > pipe);
-	std::string line;
+	bp::child    c(speller.data(), path.c_str(), bp::std_out > pipe);
+	std::string  line;
 
 	// Find and parse "WORDS MISSPELLED: <number>"
 	while (std::getline(pipe, line)) {
 		if (line.find("WORDS MISSPELLED") != std::string::npos) {
 			std::istringstream iss(line);
-			std::string unused;
+			std::string        unused;
 			// iss >> WORDS >> MISSPELLED >> <number>
 			iss >> unused >> unused >> misspelled;
 			break;
@@ -52,7 +52,7 @@ void record::run(std::string_view speller, std::filesystem::path const &path) {
 	}
 
 	// Parse the remaining stats sequentially
-	auto parse_stat = [&pipe, &line](auto& value) {
+	auto parse_stat = [&pipe, &line](auto &value) {
 		std::getline(pipe, line);
 		std::istringstream iss(line.substr(line.find(':') + 1));
 		iss >> value;
@@ -76,24 +76,26 @@ auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
 	                 16, "{: >16}", rec.txt.stem().native());
 	os << ": ";
 
-	// print status
+	// Format status with color
+	auto print_status = [&os](const char *label, auto style) {
+		os << fmt::format(style, "{: <10}", label);
+	};
+
 	if (!rec.yours.success) {
-		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::red), "{: <10}",
-		                  "ERROR");
+		print_status("ERROR", fmt::emphasis::bold | fg(fmt::color::red));
 	} else if (rec.cs50.dictionary != 0 // a stand in for include staff
 	           && rec.cs50.misspelled != rec.yours.misspelled) {
-		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::dark_golden_rod),
-		                  "{: <10}", "MISMATCH");
+		print_status("MISMATCH",
+		             fmt::emphasis::bold | fg(fmt::color::dark_golden_rod));
 	} else {
-		os << fmt::format(fmt::emphasis::bold | fg(fmt::color::lawn_green),
-		                  "{: <10}", "OK");
+		print_status("OK", fmt::emphasis::bold | fg(fmt::color::lawn_green));
 	}
 
+	// Format timing comparisons
 	auto print_val = [&os](float cs50, float yours) {
 		auto [staff_bold, your_bold] = compare_times(cs50, yours);
-		os << fmt::format("{:6.3f} ",
-		                  fmt::styled(cs50, staff_bold | cs50_color));
-		os << fmt::format("{:6.3f}   ",
+		os << fmt::format("{:6.3f} {:6.3f}   ",
+		                  fmt::styled(cs50, staff_bold | cs50_color),
 		                  fmt::styled(yours, your_bold));
 	};
 
