@@ -12,9 +12,11 @@ include(CPack)
 include(BuildType)
 include(Warnings)
 include(Sanitizers)
+include(Coverage)
 set_default_buildtype()
 enable_warnings()
 enable_sanitizers()
+enable_coverage()
 
 add_subdirectory(src)
 
