@@ -28,6 +28,7 @@
 #include <filesystem>
 #include <iterator>
 #include <numeric>
+#include <string>
 #include <string_view>
 #include <vector>
 
@@ -38,44 +39,56 @@
 
 #define CS50_TEXTS "texts"
 
+static const struct option long_options[] = {
+	  {"single-thread",       no_argument, nullptr, '1'},
+	  {"staff-speller", optional_argument, nullptr, 's'},
+	  { "your-speller", optional_argument, nullptr, 'y'},
+	  {		nullptr,				 0, nullptr,   0}
+};
+
 namespace fs = std::filesystem;
 
 static auto file_count(fs::path const &dir) noexcept ->
 	  typename std::iterator_traits<fs::directory_iterator>::difference_type;
 
 auto main(int argc, char *argv[]) -> int {
-	std::string_view cs50_speller   = "./speller50";
-	bool             multithreading = true;
-	bool             includeStaff   = true;
-	int              arg            = 0;
-	while ((arg = getopt(argc, argv, "1sy")) != -1) {
-		if (arg == '1')
+	fs::path cs50_speller   = "./speller50";
+	fs::path your_speller   = "./speller";
+	bool     multithreading = true;
+	bool     includeStaff   = false;
+	int      arg            = 0;
+	while ((arg = getopt_long(argc, argv, "1s::y::", long_options, nullptr))
+	       != -1) {
+		if (arg == '1') {
 			multithreading = false;
-		else if (arg == 's')
+		} else if (arg == 's') {
 			includeStaff = true;
-		else if (arg == 'y')
-			includeStaff = false;
-		else if (arg == '?')
+			if (optarg) cs50_speller = optarg;
+		} else if (arg == 'y') {
+			if (optarg) your_speller = optarg;
+		} else if (arg == '?') {
 			throw fmt::system_error(1, "Invalid flag\n");
+		}
 	}
 
 	// make sure speller program exists
-	if (access("speller", X_OK) == -1) {
+	if (access(your_speller.c_str(), X_OK) == -1) {
 		fmt::print(stderr,
 		           "Could not locate speller binary\n" //
 		           "Please launch the benchmark utility from the directory "
-		           "where your speller binary is located\n");
+		           "where your speller binary is located or specify its path "
+		           "with --your-speller\n");
 		return 1;
 	}
 
-	if (includeStaff && access(cs50_speller.data(), X_OK) == -1) {
+	if (includeStaff && access(cs50_speller.c_str(), X_OK) == -1) {
 		fmt::print(stderr, "Staff speller cannot be opened\n");
 		includeStaff = false;
 	}
 
 	print_results_header();
 
-	fs::path text_files(CS50_TEXTS);
+	fs::path text_files(your_speller.parent_path() / CS50_TEXTS);
 	auto     count = static_cast<std::size_t>(file_count(text_files));
 	if (count == 0) throw fmt::system_error(2, "Directory not found");
 
@@ -86,7 +99,8 @@ auto main(int argc, char *argv[]) -> int {
 
 	for (auto const &txt : fs::directory_iterator{text_files}) {
 		assert(txt.is_regular_file() && "Non text file found in texts dir");
-		records.emplace_back(txt.path(), includeStaff);
+		records.emplace_back(txt.path(), includeStaff, cs50_speller,
+		                     your_speller);
 	}
 
 	for (auto &b : records) {
@@ -100,7 +114,6 @@ auto main(int argc, char *argv[]) -> int {
 
 	if (multithreading)
 		for (auto &t : threads) t.join();
-
 
 	benchmark total = std::reduce(std::cbegin(records), std::cend(records));
 

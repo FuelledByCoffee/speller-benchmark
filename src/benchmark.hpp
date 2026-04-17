@@ -4,10 +4,10 @@
 
 #include <filesystem>
 #include <ostream>
-#include <string_view>
 
 struct record {
-	void run(std::string_view speller, std::filesystem::path const &txtfile);
+	void run(std::filesystem::path const &speller,
+	         std::filesystem::path const &txtfile);
 
 	int misspelled{};
 	int dictionary{};
@@ -37,12 +37,12 @@ struct record {
 
 	template <typename Int = int>
 	constexpr auto operator/=(Int divisor) -> record & {
-		auto div = static_cast<float>(divisor);
-		load   /= div;
-		check  /= div;
-		size   /= div;
-		unload /= div;
-		total  /= div;
+		auto div  = static_cast<float>(divisor);
+		load     /= div;
+		check    /= div;
+		size     /= div;
+		unload   /= div;
+		total    /= div;
 
 		return *this;
 	}
@@ -52,13 +52,17 @@ class benchmark {
 public:
 	benchmark() = default;
 
-	benchmark(std::filesystem::path const &txtfile, bool bench_staff) //
-		: txt(txtfile), m_staff(bench_staff) {}
+	benchmark(std::filesystem::path const &txtfile, bool bench_staff,
+	          std::filesystem::path const &staff_executable = "speller50",
+	          std::filesystem::path const &your_executable  = "speller") //
+		: txt(txtfile), m_staff(bench_staff),
+		  m_staff_executable(staff_executable),
+		  m_your_executable(your_executable) {}
 
 	template <typename F>
-	void run(F&& callback) {
-		if (m_staff) cs50.run("speller50", txt);
-		yours.run("speller", txt);
+	void run(F &&callback) {
+		if (m_staff) cs50.run(m_staff_executable, txt);
+		yours.run(m_your_executable, txt);
 		callback(*this);
 	}
 
@@ -107,8 +111,8 @@ public:
 		return b /= divisor;
 	}
 
-	friend auto operator<<(std::ostream    &os,
-	                       benchmark const &results) -> std::ostream &;
+	friend auto operator<<(std::ostream &os, benchmark const &results)
+		  -> std::ostream &;
 
 	std::filesystem::path txt;
 
@@ -116,7 +120,9 @@ private:
 	record yours{};
 	record cs50{};
 
-	bool m_staff = false;
+	bool                  m_staff            = false;
+	std::filesystem::path m_staff_executable = "speller50";
+	std::filesystem::path m_your_executable  = "speller";
 };
 
 template <>

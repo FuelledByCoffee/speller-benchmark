@@ -12,7 +12,6 @@
 #include <ostream>
 #include <sstream>
 #include <string>
-#include <string_view>
 
 /// @brief bold or not for smaller value
 [[nodiscard]] static auto compare_times(float num1, float num2)
@@ -31,12 +30,17 @@
 }
 
 //-----------------------------------------------------------------------------
-void record::run(std::string_view speller, std::filesystem::path const &path) {
+void record::run(std::filesystem::path const &speller,
+                 std::filesystem::path const &path) {
 
 	namespace bp = boost::process::v1;
 
+	auto working_dir = speller.parent_path();
+	if (working_dir.empty()) working_dir = std::filesystem::current_path();
+
 	bp::ipstream pipe;
-	bp::child    c(speller.data(), path.c_str(), bp::std_out > pipe);
+	bp::child    c(speller.native().c_str(), path.c_str(), bp::std_out > pipe,
+	               bp::start_dir(working_dir.string()));
 	std::string  line;
 
 	// Find and parse "WORDS MISSPELLED: <number>"

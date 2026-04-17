@@ -8,6 +8,11 @@ Create a folder in your speller directory for the benchmark files. Build the pro
 
 Run `./bench` from your speller directory after installing.
 
+Optional flags:
+- `-1`, `--single-thread` : disable multithreading
+- `-s`, `--staff-speller[=path]` : include the staff speller in the benchmark; optional path overrides the default `speller50`
+- `-y`, `--your-speller[=path]` : override the your speller executable path; defaults to `speller`
+
 ### Building
 -----------
 ```sh
