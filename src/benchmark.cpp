@@ -13,6 +13,7 @@
 #include <ostream>
 #include <string>
 #include <string_view>
+#include <sstream>
 
 /// @brief bold or not for smaller value
 [[nodiscard]] static auto compare_times(float num1, float num2)
@@ -43,22 +44,36 @@ void record::run(std::string_view speller, std::filesystem::path const &path) {
 	while (std::getline(pipe, line))
 		if (strstr(line.data(), "WORDS MISSPELLED") != NULL) break;
 
-	sscanf(line.data(), "WORDS MISSPELLED: %d\n", &misspelled);
-
-	line.reserve(1000);
-	pipe.read(line.data(), 1000);
-	if (sscanf(line.data(),
-	           "WORDS IN DICTIONARY:  %d\n"
-	           "WORDS IN TEXT:        %d\n"
-	           "TIME IN load:         %f\n"
-	           "TIME IN check:        %f\n"
-	           "TIME IN size:         %f\n"
-	           "TIME IN unload:       %f\n"
-	           "TIME IN TOTAL:        %f\n",
-	           &dictionary, &text, &load, &check, &size, &unload, &total)
-	    != 7) {
-		success = false;
+	// Parse "WORDS MISSPELLED: 5"
+	{
+		std::istringstream iss(line);
+		std::string label;
+		iss >> label >> label >> misspelled;  // skip "WORDS MISSPELLED:"
 	}
+
+	// Read and parse the remaining stats
+	std::string dummy;
+	for (int i = 0; i < 7; ++i) {
+		std::getline(pipe, line);
+		std::istringstream iss(line);
+
+		// Skip label (e.g., "WORDS IN DICTIONARY:")
+		std::string::size_type colon_pos = line.find(':');
+		if (colon_pos == std::string::npos) continue;
+
+		std::istringstream value_stream(line.substr(colon_pos + 1));
+
+		switch (i) {
+			case 0: value_stream >> dictionary; break;
+			case 1: value_stream >> text; break;
+			case 2: value_stream >> load; break;
+			case 3: value_stream >> check; break;
+			case 4: value_stream >> size; break;
+			case 5: value_stream >> unload; break;
+			case 6: value_stream >> total; break;
+		}
+	}
+
 	c.wait();
 }
 
