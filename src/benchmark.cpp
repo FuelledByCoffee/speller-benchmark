@@ -7,7 +7,6 @@
 #include <benchmark.hpp>
 #include <results.hpp>
 
-#include <cstdio>
 #include <iterator>
 #include <limits>
 #include <ostream>
