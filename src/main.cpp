@@ -20,6 +20,7 @@
 
 #include <benchmark.hpp>
 #include <cstddef>
+#include <fmt/base.h>
 #include <fmt/core.h>
 #include <results.hpp>
 #include <version.hpp>
@@ -37,9 +38,12 @@
 #include <getopt.h>
 #include <unistd.h>
 
+#include <version.hpp>
+
 #define CS50_TEXTS "texts"
 
-static const struct option long_options[] = {
+static constexpr struct option long_options[] = {
+	  {      "version",       no_argument, nullptr, 'v'},
 	  {"single-thread",       no_argument, nullptr, '1'},
 	  {"staff-speller", optional_argument, nullptr, 's'},
 	  { "your-speller", optional_argument, nullptr, 'y'},
@@ -57,9 +61,13 @@ auto main(int argc, char *argv[]) -> int {
 	bool     multithreading = true;
 	bool     includeStaff   = false;
 	int      arg            = 0;
-	while ((arg = getopt_long(argc, argv, "1s::y::", long_options, nullptr))
+	while ((arg = getopt_long(argc, argv, "v1s::y::", long_options, nullptr))
 	       != -1) {
-		if (arg == '1') {
+		if (arg == 'v') {
+			fmt::println("{}.{}", benchmark_VERSION_MAJOR,
+			             benchmark_VERSION_MINOR);
+			return 0;
+		} else if (arg == '1') {
 			multithreading = false;
 		} else if (arg == 's') {
 			includeStaff = true;
