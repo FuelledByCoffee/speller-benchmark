@@ -55,6 +55,7 @@ namespace fs = std::filesystem;
 static auto file_count(fs::path const &dir) noexcept ->
 	  typename std::iterator_traits<fs::directory_iterator>::difference_type;
 
+//-----------------------------------------------------------------------------
 auto main(int argc, char *argv[]) -> int {
 	fs::path cs50_speller   = "./speller50";
 	fs::path your_speller   = "./speller";
@@ -133,6 +134,7 @@ auto main(int argc, char *argv[]) -> int {
 	fmt::print("\n{}\n{}\n", total, average);
 } // main
 
+//-----------------------------------------------------------------------------
 static auto file_count(fs::path const &dir) noexcept ->
 	  typename std::iterator_traits<fs::directory_iterator>::difference_type {
 	try {
