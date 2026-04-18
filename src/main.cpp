@@ -75,7 +75,8 @@ auto main(int argc, char *argv[]) -> int {
 		} else if (arg == 'y') {
 			if (optarg) your_speller = optarg;
 		} else if (arg == '?') {
-			throw fmt::system_error(1, "Invalid flag\n");
+			fmt::print("Invalid flag\n");
+			return 1;
 		}
 	}
 

@@ -50,3 +50,5 @@ add_test(
     COMMAND bench -s
     WORKING_DIRECTORY ${speller_location}
 )
+add_test(NAME invalid_flag COMMAND bench -z)
+set_property(TEST invalid_flag PROPERTY WILL_FAIL TRUE)
