@@ -1,4 +1,4 @@
 
 all:
-	cmake -B build -DCMAKE_BUILD_TYPE=Release -DCXX_STANDARD=23
+	cmake -B build -DCMAKE_BUILD_TYPE=Release
 	cmake --build build -t install
