@@ -18,7 +18,14 @@ set_target_properties(
     PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
 )
 
-target_compile_features(bench PRIVATE cxx_decltype cxx_trailing_return_types)
+target_compile_features(
+    bench
+    PRIVATE
+        cxx_decltype
+        cxx_trailing_return_types
+        cxx_constexpr
+        cxx_variadic_templates
+)
 
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag("-march=native" COMPILER_SUPPORTS_MARCH_NATIVE)
