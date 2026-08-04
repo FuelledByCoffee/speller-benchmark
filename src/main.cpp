@@ -43,10 +43,12 @@
 #define CS50_TEXTS "texts"
 
 static constexpr struct option long_options[] = {
+	  {		 "help",       no_argument, nullptr, 'h'},
 	  {      "version",       no_argument, nullptr, 'v'},
 	  {"single-thread",       no_argument, nullptr, '1'},
 	  {"staff-speller", optional_argument, nullptr, 's'},
 	  { "your-speller", optional_argument, nullptr, 'y'},
+	  {     "no-staff",       no_argument, nullptr, 'n'},
 	  {		nullptr,				 0, nullptr,   0}
 };
 
@@ -60,9 +62,9 @@ auto main(int argc, char *argv[]) -> int {
 	fs::path cs50_speller   = "./speller50";
 	fs::path your_speller   = "./speller";
 	bool     multithreading = true;
-	bool     includeStaff   = false;
+	bool     includeStaff   = true;
 	int      arg            = 0;
-	while ((arg = getopt_long(argc, argv, "v1s::y::", long_options, nullptr))
+	while ((arg = getopt_long(argc, argv, "v1s::y::hn", long_options, nullptr))
 	       != -1) {
 		if (arg == 'v') {
 			fmt::println("{}.{}", benchmark_VERSION_MAJOR,
@@ -71,10 +73,15 @@ auto main(int argc, char *argv[]) -> int {
 		} else if (arg == '1') {
 			multithreading = false;
 		} else if (arg == 's') {
-			includeStaff = true;
 			if (optarg) cs50_speller = optarg;
 		} else if (arg == 'y') {
 			if (optarg) your_speller = optarg;
+		} else if (arg == 'n') {
+			includeStaff = false;
+		} else if (arg == 'h') {
+			fmt::println("Usage: {} [hv1sy]...",
+			             fs::path(argv[0]).filename().string());
+			return 0;
 		} else if (arg == '?') {
 			fmt::print("Invalid flag\n");
 			return 1;
