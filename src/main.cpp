@@ -100,7 +100,11 @@ auto main(int argc, char *argv[]) -> int {
 
 	fs::path text_files(your_speller.parent_path() / CS50_TEXTS);
 	auto     count = static_cast<std::size_t>(file_count(text_files));
-	if (count == 0) throw fmt::system_error(2, "Directory not found");
+
+	if (count == 0) {
+		fmt::print(stderr, "Directory not found\n");
+		return 2;
+	}
 
 	std::vector<benchmark>   records;
 	std::vector<std::thread> threads;
