@@ -21,7 +21,7 @@ set_target_properties(
 target_compile_features(
     bench
     PRIVATE
-        cxx_std_26
+        cxx_std_23
         cxx_decltype
         cxx_constexpr
         cxx_trailing_return_types
