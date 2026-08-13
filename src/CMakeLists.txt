@@ -21,9 +21,10 @@ set_target_properties(
 target_compile_features(
     bench
     PRIVATE
+        cxx_std_26
         cxx_decltype
-        cxx_trailing_return_types
         cxx_constexpr
+        cxx_trailing_return_types
         cxx_variadic_templates
 )
 
