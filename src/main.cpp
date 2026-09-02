@@ -66,11 +66,11 @@ static auto print_help(char const *argv0) -> void {
 		  "  -h, --help              Show this help message and exit\n"
 		  "  -v, --version           Print the benchmark version and exit\n"
 		  "  -1, --single-thread     Run benchmarks serially instead of in "
-	      "parallel\n"
+		  "parallel\n"
 		  "  -s, --staff-speller     Path to the staff speller binary\n"
 		  "  -y, --your-speller      Path to your speller binary\n"
 		  "  -n, --no-staff          Exclude the staff implementation from the "
-	      "benchmark\n",
+		  "benchmark\n",
 		  program, program, program);
 }
 
