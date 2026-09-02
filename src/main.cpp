@@ -84,7 +84,7 @@ auto main(int argc, char *argv[]) -> int {
 	bool     multithreading = true;
 	bool     includeStaff   = true;
 	int      arg            = 0;
-	while ((arg = getopt_long(argc, argv, "v1s::y::hn", long_options, nullptr))
+	while ((arg = getopt_long(argc, argv, "v1s:y:hn", long_options, nullptr))
 	       != -1) {
 		switch (arg) {
 			case 'v': fmt::println("{}.{}", VERSION_MAJOR, VERSION_MINOR); return 0;
