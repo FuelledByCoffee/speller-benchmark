@@ -15,7 +15,7 @@
 
 /// @brief bold or not for smaller value
 [[nodiscard]] static auto compare_times(float num1, float num2)
-	  -> std::pair<fmt::text_style, fmt::text_style> {
+			-> std::pair<fmt::text_style, fmt::text_style> {
 
 	constexpr static auto epsilon = std::numeric_limits<float>::epsilon();
 
@@ -75,8 +75,8 @@ void record::run(std::filesystem::path const &speller,
 //-----------------------------------------------------------------------------
 auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
 
-	fmt::format_to_n(std::ostream_iterator<decltype(rec.txt)::value_type>(os),
-	                 16, "{: >16}", rec.txt.stem().native());
+	fmt::format_to_n(std::ostream_iterator<decltype(rec.txt)::value_type>(os), 16,
+	                 "{: >16}", rec.txt.stem().native());
 	os << ": ";
 
 	// Format status with color

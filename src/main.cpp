@@ -43,13 +43,13 @@
 #define CS50_TEXTS "texts"
 
 static constexpr struct option long_options[] = {
-	  {		 "help",       no_argument, nullptr, 'h'},
-	  {      "version",       no_argument, nullptr, 'v'},
-	  {"single-thread",       no_argument, nullptr, '1'},
-	  {"staff-speller", required_argument, nullptr, 's'},
-	  { "your-speller", required_argument, nullptr, 'y'},
-	  {     "no-staff",       no_argument, nullptr, 'n'},
-	  {		nullptr,				 0, nullptr,   0}
+			{"help",          no_argument,       nullptr, 'h'},
+			{"version",       no_argument,       nullptr, 'v'},
+			{"single-thread", no_argument,       nullptr, '1'},
+			{"staff-speller", required_argument, nullptr, 's'},
+			{"your-speller",  required_argument, nullptr, 'y'},
+			{"no-staff",      no_argument,       nullptr, 'n'},
+			{nullptr,         0,                 nullptr, 0  }
 };
 
 namespace fs = std::filesystem;
@@ -57,25 +57,25 @@ namespace fs = std::filesystem;
 static auto print_help(char const *argv0) -> void {
 	auto const program = fs::path(argv0).filename().string();
 	fmt::print(
-		  "Usage: {} [--help] [--version] [--single-thread] "
-		  "[--staff-speller PATH] [--your-speller PATH] [--no-staff]\n\n"
-		  "Examples:\n"
-		  "  {} --your-speller ./speller --staff-speller ./speller50\n"
-		  "  {} --single-thread --no-staff\n\n"
-		  "Options:\n"
-		  "  -h, --help              Show this help message and exit\n"
-		  "  -v, --version           Print the benchmark version and exit\n"
-		  "  -1, --single-thread     Run benchmarks serially instead of in "
-		  "parallel\n"
-		  "  -s, --staff-speller     Path to the staff speller binary\n"
-		  "  -y, --your-speller      Path to your speller binary\n"
-		  "  -n, --no-staff          Exclude the staff implementation from the "
-		  "benchmark\n",
-		  program, program, program);
+				"Usage: {} [--help] [--version] [--single-thread] "
+				"[--staff-speller PATH] [--your-speller PATH] [--no-staff]\n\n"
+				"Examples:\n"
+				"  {} --your-speller ./speller --staff-speller ./speller50\n"
+				"  {} --single-thread --no-staff\n\n"
+				"Options:\n"
+				"  -h, --help              Show this help message and exit\n"
+				"  -v, --version           Print the benchmark version and exit\n"
+				"  -1, --single-thread     Run benchmarks serially instead of in "
+				"parallel\n"
+				"  -s, --staff-speller     Path to the staff speller binary\n"
+				"  -y, --your-speller      Path to your speller binary\n"
+				"  -n, --no-staff          Exclude the staff implementation from the "
+				"benchmark\n",
+				program, program, program);
 }
 
 static auto file_count(fs::path const &dir) noexcept ->
-	  typename std::iterator_traits<fs::directory_iterator>::difference_type;
+			typename std::iterator_traits<fs::directory_iterator>::difference_type;
 
 //-----------------------------------------------------------------------------
 auto main(int argc, char *argv[]) -> int {
@@ -87,13 +87,13 @@ auto main(int argc, char *argv[]) -> int {
 	while ((arg = getopt_long(argc, argv, "v1s::y::hn", long_options, nullptr))
 	       != -1) {
 		switch (arg) {
-		case 'v': fmt::println("{}.{}", VERSION_MAJOR, VERSION_MINOR); return 0;
-		case '1': multithreading = false; break;
-		case 's': cs50_speller = optarg; break;
-		case 'y': your_speller = optarg; break;
-		case 'n': includeStaff = false; break;
-		case 'h': print_help(argv[0]); return 0;
-		case '?': fmt::print("Invalid flag\n"); return 1;
+			case 'v': fmt::println("{}.{}", VERSION_MAJOR, VERSION_MINOR); return 0;
+			case '1': multithreading = false; break;
+			case 's': cs50_speller = optarg; break;
+			case 'y': your_speller = optarg; break;
+			case 'n': includeStaff = false; break;
+			case 'h': print_help(argv[0]); return 0;
+			case '?': fmt::print(stderr, "Invalid flag\n"); return 1;
 		}
 	}
 
@@ -129,8 +129,7 @@ auto main(int argc, char *argv[]) -> int {
 
 	for (auto const &txt : fs::directory_iterator{text_files}) {
 		assert(txt.is_regular_file() && "Non text file found in texts dir");
-		records.emplace_back(txt.path(), includeStaff, cs50_speller,
-		                     your_speller);
+		records.emplace_back(txt.path(), includeStaff, cs50_speller, your_speller);
 	}
 
 	for (auto &b : records) {
@@ -138,8 +137,7 @@ auto main(int argc, char *argv[]) -> int {
 		if (!multithreading)
 			b.run(printer);
 		else
-			threads.emplace_back(&benchmark::run<decltype(printer)>, &b,
-			                     printer);
+			threads.emplace_back(&benchmark::run<decltype(printer)>, &b, printer);
 	}
 
 	if (multithreading)
@@ -156,10 +154,9 @@ auto main(int argc, char *argv[]) -> int {
 
 //-----------------------------------------------------------------------------
 static auto file_count(fs::path const &dir) noexcept ->
-	  typename std::iterator_traits<fs::directory_iterator>::difference_type {
+			typename std::iterator_traits<fs::directory_iterator>::difference_type {
 	try {
-		return std::distance(fs::directory_iterator{dir},
-		                     fs::directory_iterator{});
+		return std::distance(fs::directory_iterator{dir}, fs::directory_iterator{});
 	} catch (const std::exception &e) {
 		fmt::print(stderr, "{}\n", e.what());
 		return 0;
