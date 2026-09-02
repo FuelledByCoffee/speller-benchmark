@@ -73,8 +73,17 @@ auto main(int argc, char *argv[]) -> int {
 		case 'y': your_speller = optarg; break;
 		case 'n': includeStaff = false; break;
 		case 'h':
-			fmt::println("Usage: {} [hv1sy]...",
-			             fs::path(argv[0]).filename().string());
+			fmt::print(
+			    "Usage: {} [--help] [--version] [--single-thread] "
+			    "[--staff-speller PATH] [--your-speller PATH] [--no-staff]\n\n"
+			    "Options:\n"
+			    "  -h, --help              Show this help message and exit\n"
+			    "  -v, --version           Print the benchmark version and exit\n"
+			    "  -1, --single-thread     Run benchmarks serially instead of in parallel\n"
+			    "  -s, --staff-speller     Path to the staff speller binary\n"
+			    "  -y, --your-speller      Path to your speller binary\n"
+			    "  -n, --no-staff          Exclude the staff implementation from the benchmark\n",
+			    fs::path(argv[0]).filename().string());
 			return 0;
 		case '?': fmt::print("Invalid flag\n"); return 1;
 		}
