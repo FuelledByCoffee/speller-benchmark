@@ -91,7 +91,7 @@ auto operator<<(std::ostream &os, benchmark const &rec) -> std::ostream & {
 		print_status("MISMATCH",
 		             fmt::emphasis::bold | fg(fmt::color::dark_golden_rod));
 	} else {
-		print_status("OK", fmt::emphasis::bold | fg(fmt::color::lawn_green));
+		print_status("OK", fmt::emphasis::bold | fg(fmt::color::lime_green));
 	}
 
 	// Format timing comparisons
