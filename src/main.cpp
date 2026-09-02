@@ -43,16 +43,36 @@
 #define CS50_TEXTS "texts"
 
 static constexpr struct option long_options[] = {
-	  {         "help",       no_argument, nullptr, 'h'},
+	  {		 "help",       no_argument, nullptr, 'h'},
 	  {      "version",       no_argument, nullptr, 'v'},
 	  {"single-thread",       no_argument, nullptr, '1'},
 	  {"staff-speller", required_argument, nullptr, 's'},
 	  { "your-speller", required_argument, nullptr, 'y'},
 	  {     "no-staff",       no_argument, nullptr, 'n'},
-	  {        nullptr,                 0, nullptr,   0}
+	  {		nullptr,				 0, nullptr,   0}
 };
 
 namespace fs = std::filesystem;
+
+static auto print_help(char const *argv0) -> void {
+	auto const program = fs::path(argv0).filename().string();
+	fmt::print(
+		  "Usage: {} [--help] [--version] [--single-thread] "
+		  "[--staff-speller PATH] [--your-speller PATH] [--no-staff]\n\n"
+		  "Examples:\n"
+		  "  {} --your-speller ./speller --staff-speller ./speller50\n"
+		  "  {} --single-thread --no-staff\n\n"
+		  "Options:\n"
+		  "  -h, --help              Show this help message and exit\n"
+		  "  -v, --version           Print the benchmark version and exit\n"
+		  "  -1, --single-thread     Run benchmarks serially instead of in "
+	      "parallel\n"
+		  "  -s, --staff-speller     Path to the staff speller binary\n"
+		  "  -y, --your-speller      Path to your speller binary\n"
+		  "  -n, --no-staff          Exclude the staff implementation from the "
+	      "benchmark\n",
+		  program, program, program);
+}
 
 static auto file_count(fs::path const &dir) noexcept ->
 	  typename std::iterator_traits<fs::directory_iterator>::difference_type;
@@ -72,19 +92,7 @@ auto main(int argc, char *argv[]) -> int {
 		case 's': cs50_speller = optarg; break;
 		case 'y': your_speller = optarg; break;
 		case 'n': includeStaff = false; break;
-		case 'h':
-			fmt::print(
-			    "Usage: {} [--help] [--version] [--single-thread] "
-			    "[--staff-speller PATH] [--your-speller PATH] [--no-staff]\n\n"
-			    "Options:\n"
-			    "  -h, --help              Show this help message and exit\n"
-			    "  -v, --version           Print the benchmark version and exit\n"
-			    "  -1, --single-thread     Run benchmarks serially instead of in parallel\n"
-			    "  -s, --staff-speller     Path to the staff speller binary\n"
-			    "  -y, --your-speller      Path to your speller binary\n"
-			    "  -n, --no-staff          Exclude the staff implementation from the benchmark\n",
-			    fs::path(argv[0]).filename().string());
-			return 0;
+		case 'h': print_help(argv[0]); return 0;
 		case '?': fmt::print("Invalid flag\n"); return 1;
 		}
 	}
