@@ -32,22 +32,18 @@ install(TARGETS bench CONFIGURATIONS Release)
 include(CTest)
 add_test(
     NAME single_thread
-    COMMAND bench -1y
+    COMMAND bench -1 --no-staff
     WORKING_DIRECTORY ${speller_location}
 )
-add_test(
-    NAME multi_thread
-    COMMAND bench -y
-    WORKING_DIRECTORY ${speller_location}
-)
+add_test(NAME multi_thread COMMAND bench WORKING_DIRECTORY ${speller_location})
 add_test(
     NAME single_thread_with_staff
-    COMMAND bench -1s
+    COMMAND bench -1
     WORKING_DIRECTORY ${speller_location}
 )
 add_test(
     NAME multi_thread_with_staff
-    COMMAND bench -s
+    COMMAND bench
     WORKING_DIRECTORY ${speller_location}
 )
 add_test(NAME invalid_flag COMMAND bench -z)
