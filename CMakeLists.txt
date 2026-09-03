@@ -29,8 +29,10 @@ set(speller_location
 )
 
 install(TARGETS bench CONFIGURATIONS Release)
-install(CODE "file(MAKE_DIRECTORY \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_MANDIR}/man1\")")
-install(FILES "${CMAKE_SOURCE_DIR}/bench.1" DESTINATION "${CMAKE_INSTALL_MANDIR}/man1")
+install(
+    FILES "${CMAKE_SOURCE_DIR}/bench.1"
+    DESTINATION "${CMAKE_INSTALL_MANDIR}/man1"
+)
 
 include(CTest)
 add_test(
