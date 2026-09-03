@@ -28,9 +28,17 @@ set(speller_location
     "The location of your cs50 speller project directory"
 )
 
+file(
+    ARCHIVE_CREATE
+    OUTPUT "${CMAKE_BINARY_DIR}/bench.1.gz"
+    PATHS "${CMAKE_SOURCE_DIR}/bench.1"
+    FORMAT raw
+    COMPRESSION GZip
+)
+
 install(TARGETS bench CONFIGURATIONS Release)
 install(
-    FILES "${CMAKE_SOURCE_DIR}/bench.1"
+    FILES "${CMAKE_BINARY_DIR}/bench.1.gz"
     DESTINATION "${CMAKE_INSTALL_MANDIR}/man1"
 )
 
