@@ -21,11 +21,16 @@ enable_coverage()
 
 add_subdirectory(src)
 
-get_filename_component(PARENT_DIR ../ ABSOLUTE)
-set(speller_location
-    "${PARENT_DIR}"
-    CACHE PATH
-    "The location of your cs50 speller project directory"
+find_path(
+    SPELLER_LOCATION
+    NAMES speller
+    PATHS
+        "${CMAKE_SOURCE_DIR}/.."
+        "${CMAKE_SOURCE_DIR}/../speller"
+        "${CMAKE_SOURCE_DIR}/../cs50/speller"
+        "${CMAKE_SOURCE_DIR}/../cs50/week5/speller"
+    NO_DEFAULT_PATH
+    DOC "The location of your speller project directory"
 )
 
 file(
@@ -46,18 +51,19 @@ include(CTest)
 add_test(
     NAME single_thread
     COMMAND bench -1 --no-staff
-    WORKING_DIRECTORY ${speller_location}
+    WORKING_DIRECTORY ${SPELLER_LOCATION}
 )
-add_test(NAME multi_thread COMMAND bench WORKING_DIRECTORY ${speller_location})
+add_test(NAME multi_thread COMMAND bench WORKING_DIRECTORY ${SPELLER_LOCATION})
 add_test(
     NAME single_thread_with_staff
     COMMAND bench -1
-    WORKING_DIRECTORY ${speller_location}
+    WORKING_DIRECTORY ${SPELLER_LOCATION}
 )
 add_test(
     NAME multi_thread_with_staff
     COMMAND bench
-    WORKING_DIRECTORY ${speller_location}
+    WORKING_DIRECTORY ${SPELLER_LOCATION}
 )
 add_test(NAME invalid_flag COMMAND bench -z)
+
 set_property(TEST invalid_flag PROPERTY WILL_FAIL TRUE)

@@ -100,6 +100,9 @@ auto main(int argc, char *argv[]) -> int {
 		}
 	}
 
+	cs50_speller = fs::absolute(cs50_speller).lexically_normal();
+	your_speller = fs::absolute(your_speller).lexically_normal();
+
 	// make sure speller program exists
 	if (access(your_speller.c_str(), X_OK) == -1) {
 		fmt::print(stderr,
@@ -132,7 +135,7 @@ auto main(int argc, char *argv[]) -> int {
 
 	for (auto const &txt : fs::directory_iterator{text_files}) {
 		assert(txt.is_regular_file() && "Non text file found in texts dir");
-		records.emplace_back(txt.path(), includeStaff, cs50_speller, your_speller);
+		records.emplace_back(txt, includeStaff, cs50_speller, your_speller);
 	}
 
 	for (auto &b : records) {
