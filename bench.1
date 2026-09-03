@@ -1,0 +1,57 @@
+.TH BENCH 1 "September 2026" "speller-benchmark 2.1" "User Commands"
+.SH NAME
+bench \- benchmark a CS50 speller against the staff implementation
+.SH SYNOPSIS
+.B bench
+[
+.BR \-h | \-\-help
+]
+[
+.BR \-v | \-\-version
+]
+[
+.BR \-1 | \-\-single-thread
+]
+[
+.BR \-s | \-\-staff-speller " PATH"
+]
+[
+.BR \-y | \-\-your-speller " PATH"
+]
+[
+.BR \-n | \-\-no-staff
+]
+.SH DESCRIPTION
+.B bench
+runs the supplied speller binary against the staff solution over the sample texts
+stored in the project\'s
+.I texts
+directory. It reports timing and correctness data for each file and prints an
+aggregate total and average.
+.SH OPTIONS
+.TP
+.BR \-h , \-\-help
+Show the help text and exit.
+.TP
+.BR \-v , \-\-version
+Print the benchmark version number and exit.
+.TP
+.BR \-1 , \-\-single-thread
+Run the benchmark serially instead of launching one worker thread per text file.
+.TP
+.BR \-s , \-\-staff-speller " PATH"
+Path to the staff speller executable. Defaults to
+.IR ./speller50 .
+.TP
+.BR \-y , \-\-your-speller " PATH"
+Path to your speller executable. Defaults to
+.IR ./speller .
+.TP
+.BR \-n , \-\-no-staff
+Skip the staff implementation and benchmark only your speller.
+.SH EXAMPLES
+.B bench --your-speller ./speller --staff-speller ./speller50
+.PP
+.B bench --single-thread --no-staff
+.SH SEE ALSO
+The project README for usage notes and expected benchmark output.

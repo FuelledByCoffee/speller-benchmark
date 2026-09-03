@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 4.1)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+include(GNUInstallDirs)
 include(vcpkg) # Must set toolchain file before calling project()
 project(speller-benchmark VERSION 2.1 LANGUAGES CXX)
 
@@ -28,6 +29,8 @@ set(speller_location
 )
 
 install(TARGETS bench CONFIGURATIONS Release)
+install(CODE "file(MAKE_DIRECTORY \"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_MANDIR}/man1\")")
+install(FILES "${CMAKE_SOURCE_DIR}/bench.1" DESTINATION "${CMAKE_INSTALL_MANDIR}/man1")
 
 include(CTest)
 add_test(
