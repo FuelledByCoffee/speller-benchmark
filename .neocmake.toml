@@ -1,0 +1,3 @@
+
+# .neocmake.toml
+line_max_words = 120   # Increase the allowed length (default is 80)
