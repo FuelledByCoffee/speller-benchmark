@@ -23,7 +23,8 @@ add_subdirectory(src)
 
 find_path(
     SPELLER_LOCATION
-    NAMES speller
+    NAMES
+        speller
     PATHS
         "${CMAKE_SOURCE_DIR}/.."
         "${CMAKE_SOURCE_DIR}/../speller"
@@ -36,34 +37,40 @@ find_path(
 file(
     ARCHIVE_CREATE
     OUTPUT "${CMAKE_BINARY_DIR}/bench.1.gz"
-    PATHS "${CMAKE_SOURCE_DIR}/bench.1"
+    PATHS
+        "${CMAKE_SOURCE_DIR}/bench.1"
     FORMAT raw
     COMPRESSION GZip
 )
 
 install(TARGETS bench CONFIGURATIONS Release)
-install(
-    FILES "${CMAKE_BINARY_DIR}/bench.1.gz"
-    DESTINATION "${CMAKE_INSTALL_MANDIR}/man1"
-)
+install(FILES "${CMAKE_BINARY_DIR}/bench.1.gz" DESTINATION "${CMAKE_INSTALL_MANDIR}/man1")
 
 include(CTest)
 add_test(
     NAME single_thread
-    COMMAND bench -1 --no-staff
+    COMMAND
+        bench -1 --no-staff
     WORKING_DIRECTORY ${SPELLER_LOCATION}
 )
 add_test(NAME multi_thread COMMAND bench WORKING_DIRECTORY ${SPELLER_LOCATION})
 add_test(
     NAME single_thread_with_staff
-    COMMAND bench -1
+    COMMAND
+        bench -1
     WORKING_DIRECTORY ${SPELLER_LOCATION}
 )
+add_test(NAME multi_thread_with_staff COMMAND bench WORKING_DIRECTORY ${SPELLER_LOCATION})
 add_test(
-    NAME multi_thread_with_staff
-    COMMAND bench
-    WORKING_DIRECTORY ${SPELLER_LOCATION}
+    NAME invalid_flag
+    COMMAND
+        bench -z
 )
-add_test(NAME invalid_flag COMMAND bench -z)
 
-set_property(TEST invalid_flag PROPERTY WILL_FAIL TRUE)
+set_property(
+    TEST
+        invalid_flag
+    PROPERTY
+        WILL_FAIL
+            TRUE
+)
