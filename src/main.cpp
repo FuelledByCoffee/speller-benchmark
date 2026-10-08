@@ -93,10 +93,7 @@ auto main(int argc, char *argv[]) -> int {
 			case 'y': your_speller = optarg; break;
 			case 'n': includeStaff = false; break;
 			case 'h': print_help(argv[0]); return 0;
-			case '?':
-				print_help(argv[0]);
-				fmt::print(stderr, "Invalid flag\n");
-				return 1;
+			case '?': print_help(argv[0]); return 1;
 		}
 	}
 
